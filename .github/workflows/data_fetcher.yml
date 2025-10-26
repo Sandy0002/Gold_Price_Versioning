@@ -1,13 +1,14 @@
 name: Fetch and Update Gold Data
 
 on:
-  # schedule:
-  #   - cron: "35 14 * * *"   # Optional: Runs daily at 20:05 IST
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:  # allows manual trigger from GitHub UI
+  schedule:
+    - cron: "35 14 * * *"   # Optional: Runs daily at 20:05 IST
+    
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+  # workflow_dispatch:  # allows manual trigger from GitHub UI
 
 permissions:
   contents: write
