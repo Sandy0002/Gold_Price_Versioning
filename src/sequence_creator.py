@@ -18,14 +18,15 @@ def create_sequences(data, lookback):
 
 
 def prepare_data():
-    print("DB_HOST:", os.getenv("DB_HOST"))
-    print("DB_NAME:", os.getenv("DB_NAME"))
+    # print("DB_HOST:", os.getenv("DB_HOST"))
+    # print("DB_NAME:", os.getenv("DB_NAME"))
     df = fetch_data_postgres()
     data = df[["Close"]]
 
     # Scaling data
     scaler = MinMaxScaler(feature_range=(0, 1))
     scaled_data = scaler.fit_transform(data)
+    print(scaled_data)
     lookback = 60
 
     X, y = create_sequences(scaled_data, lookback)
