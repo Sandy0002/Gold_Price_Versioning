@@ -65,4 +65,5 @@ jobs:
 
       - name: Creating and updating model file
         run: |
+          python -m src.data_preprocess
           python -m src.sequence_creator
