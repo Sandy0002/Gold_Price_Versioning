@@ -7,6 +7,16 @@ from sklearn.preprocessing import MinMaxScaler
 from pathlib import Path
 from src.data_preprocess import fetch_data_postgres
 import os
+from sqlalchemy import create_engine, inspect
+from dotenv import load_dotenv
+
+load_dotenv()
+
+def get_engine():
+    return create_engine(
+        f"postgresql+psycopg2://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"
+        f"@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
+    )
 
 # Create sequences (lookback = 60 days)
 def create_sequences(data, lookback):
@@ -20,6 +30,7 @@ def create_sequences(data, lookback):
 def prepare_data():
     # print("DB_HOST:", os.getenv("DB_HOST"))
     # print("DB_NAME:", os.getenv("DB_NAME"))
+    engine = get_engine()
     df = fetch_data_postgres()
     data = df[["Close"]]
 

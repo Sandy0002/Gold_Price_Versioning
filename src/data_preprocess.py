@@ -92,7 +92,7 @@ def store_data_postgres(df, table_name="gold_prices"):
 
 
 # ---------- STEP 3: FETCH DATA BACK ----------
-def fetch_data_postgres(table_name="gold_prices"):
+def fetch_data_postgres(table_name="gold_prices",engine=None):
     engine = get_engine()
     df = pd.read_sql(f"SELECT * FROM {table_name}", engine)
     print(f"✅ Retrieved {len(df)} rows from '{table_name}'.")
