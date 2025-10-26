@@ -9,7 +9,6 @@ on:
   pull_request:
     branches: [ main ]
 
-      
   workflow_dispatch:  # allows manual trigger from GitHub UI
 
 permissions:
@@ -46,6 +45,26 @@ jobs:
         run: |
           echo "✅ Environment variables loaded"
 
+          
+      - name: Test database connection
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+        run: |
+          python - <<'EOF'
+          import os, mysql.connector
+          try:
+              conn = mysql.connector.connect(
+                  host=os.getenv("DB_HOST"),
+                  user=os.getenv("DB_USER"),
+                  password=os.getenv("DB_PASS")
+              )
+              print("✅ Connection successful")
+          except Exception as e:
+              print("❌ Connection failed:", e)
+          EOF
+          
       # 5️⃣ Run data update script
       - name: Run data fetch & update
         env:

@@ -1,97 +1,106 @@
 import yfinance as yf
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect
 from datetime import date, timedelta
 import os
-from pathlib import Path
 from dotenv import load_dotenv
 
-
-# Loading .env file to access the contents in the folder
 load_dotenv()
 
-# Getting database credentials
-username = os.getenv("DB_USER")
-password = os.getenv("DB_PASS")
-host = os.getenv("DB_HOST")
-database = os.getenv("DB_NAME")
-table_name="gold_prices"
+# ---------- DATABASE CONNECTION ----------
+def get_engine():
+    return create_engine(
+        f"postgresql+psycopg2://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"
+        f"@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
+    )
 
-# ---------- STEP 1: FETCH DATA FROM YFINANCE ----------
-def fetch_gold_data(ticker="GC=F", period="5y", interval="1d"):
+# ---------- STEP 1: FETCH GOLD DATA ----------
+def fetch_gold_data(table_name="gold_prices", ticker="GC=F"):
     """
     Fetch historical gold price data from Yahoo Finance.
-    Default ticker 'GC=F' is Gold Futures.
+    Updates data daily and avoids duplicates.
     """
+    engine = get_engine()
+    gold = yf.Ticker(ticker)
 
-    engine = create_engine(f"mysql+mysqlconnector://{username}:{password}@{host}/{database}")
-    gold = yf.Ticker("GC=F")
+    inspector = inspect(engine)
+    table_exists = table_name in inspector.get_table_names()
 
-    # Get the last date in the table (if table exists)
-    try:
-        last_date = pd.read_sql(f"SELECT MAX(Date) AS last_date FROM {table_name}", engine)["last_date"][0]
-        if last_date is not None:
-            start_date = pd.to_datetime(last_date).date() + timedelta(days=1)
-        else:
+    # Determine start date for fetching
+    if table_exists:
+        try:
+            last_date_query = pd.read_sql(f'SELECT MAX("Date") AS last_date FROM {table_name}', engine)
+            last_date = last_date_query["last_date"][0]
+
+            # if some entry is there in table and database
+            if last_date is not None:
+                start_date = pd.to_datetime(last_date).date() + timedelta(days=1)
+            
+            # if no entyr is there in table possibly no table
+            else:
+                start_date = date.today() - timedelta(days=5)
+        
+        # If anything goes wrong
+        except Exception:
             start_date = date.today() - timedelta(days=5)
-    except Exception:
-        start_date = date.today() - timedelta(days=5)
+    else:
+        start_date = "2020-01-01"
 
     end_date = date.today()
 
     df = gold.history(start=start_date, end=end_date, interval="1d").reset_index()
     if df.empty:
         print("ℹ️ No new data to fetch.")
-        return df
+        return pd.DataFrame()  # empty dataframe
 
-    # Normalize Date to date only
+    # Normalize Date column
     df['Date'] = pd.to_datetime(df['Date']).dt.date
 
-    # Fetch existing dates from DB
-    existing_df = pd.read_sql(f"SELECT Date FROM {table_name}", engine)
-    existing_df['Date'] = pd.to_datetime(existing_df['Date']).dt.date
+    # Filter out rows already in DB
+    if table_exists:
+        existing_dates = pd.read_sql(f'SELECT "Date" FROM {table_name}', engine)
+        existing_dates['Date'] = pd.to_datetime(existing_dates['Date']).dt.date
+        df = df[~df['Date'].isin(existing_dates['Date'])]
 
-    # Keep only new rows
-    new_rows = df[~df['Date'].isin(existing_df['Date'])]
-    print(f"✅ {len(new_rows)} new rows ready to insert.")
-    return new_rows
-
-
-# ---------- STEP 2: STORE IN MYSQL ----------
-def store_data_to_mysql(df, table_name="gold_prices"):
-    """
-    Store fetched data into MySQL database using SQLAlchemy.
-    Update the connection string with your credentials.
-    """
-
-    # create connection engine
-    engine = create_engine(f"mysql+mysqlconnector://{username}:{password}@{host}/{database}")
-
-    # Check if table exists
-    if not df.empty:
-        df.to_sql(table_name, engine, if_exists="append", index=False)
-        print(f"✅ Appended {len(df)} new rows to '{table_name}'.")
-    else:
-        print(f"ℹ️ No new rows to append.")
-
-
-# ---------- STEP 3: FETCH FROM MYSQL ----------
-def fetch_data_from_mysql(table_name="gold_prices"):
-    """
-    Fetch stored data from MySQL database back into pandas DataFrame.
-    """
-    engine = create_engine(f"mysql+mysqlconnector://{username}:{password}@{host}/{database}")
-    query = f"SELECT * FROM {table_name}"
-    df = pd.read_sql(query, engine)
-    print(f"✅ Retrieved {len(df)} rows from MySQL table '{table_name}'")
+    print(f"✅ {len(df)} new rows ready to insert.")
     return df
 
 
+# ---------- STEP 2: STORE DATA TO POSTGRES ----------
+def store_data_postgres(df, table_name="gold_prices"):
+    """
+    Store fetched data into PostgreSQL.
+    Creates table if not exists, appends new rows otherwise.
+    """
+    if df.empty:
+        print(f"ℹ️ No new rows to append.")
+        return
+
+    engine = get_engine()
+    inspector = inspect(engine)
+    table_exists = table_name in inspector.get_table_names()
+
+    if not table_exists:
+        # Create table and insert data
+        df.to_sql(table_name, engine, if_exists="replace", index=False)
+        print(f"✅ Table '{table_name}' created and {len(df)} rows inserted.")
+    else:
+        # Append new rows
+        df.to_sql(table_name, engine, if_exists="append", index=False)
+        print(f"✅ Appended {len(df)} new rows to '{table_name}'.")
+
+
+# ---------- STEP 3: FETCH DATA BACK ----------
+def fetch_data_postgres(table_name="gold_prices"):
+    engine = get_engine()
+    df = pd.read_sql(f"SELECT * FROM {table_name}", engine)
+    print(f"✅ Retrieved {len(df)} rows from '{table_name}'.")
+    return df
+
 # ---------- MAIN PIPELINE ----------
 if __name__ == "__main__":
-    df = fetch_gold_data()
-    if len(df)>0:
-      store_data_to_mysql(df)
-    df_retrieved = fetch_data_from_mysql()
-
+    new_data = fetch_gold_data()
+    if len(new_data) >0:
+        store_data_postgres(new_data)
+    df_retrieved = fetch_data_postgres()
     print(df_retrieved.tail())
