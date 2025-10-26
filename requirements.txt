@@ -5,3 +5,4 @@ numpy
 scikit-learn
 sqlalchemy
 pathlib
+mysql-connector-python
