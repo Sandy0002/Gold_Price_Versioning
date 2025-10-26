@@ -5,7 +5,7 @@ import pandas as pd
 import sklearn as sk
 from sklearn.preprocessing import MinMaxScaler
 from pathlib import Path
-from data_preprocess import fetch_data_postgres
+from src.data_preprocess import fetch_data_postgres
 
 # Create sequences (lookback = 60 days)
 def create_sequences(data, lookback):
