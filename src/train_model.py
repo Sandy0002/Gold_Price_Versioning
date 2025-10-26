@@ -3,7 +3,6 @@
 import os
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
-import matplotlib.pyplot as plt
 from sequence_creator import prepare_data
 from pathlib import Path
 from tensorflow.keras.models import load_model
