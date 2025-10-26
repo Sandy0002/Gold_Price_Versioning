@@ -1,14 +1,12 @@
 name: Fetch and Update Gold Data
 
-
 on:
   # schedule:
-  #   - cron: "35 14 * * *"   # ✅ Runs every day at 19:05 IST after data_fetcher
+  #   - cron: "35 14 * * *"   # Optional: Runs daily at 20:05 IST
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
   workflow_dispatch:  # allows manual trigger from GitHub UI
 
 permissions:
@@ -27,7 +25,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'   # 3.13 is too new; use 3.10 or 3.11 for stability
+          python-version: '3.11'   # stable version
 
       # 3️⃣ Install dependencies
       - name: Install dependencies
@@ -35,7 +33,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4️⃣ Set environment variables (MySQL credentials)
+      # 4️⃣ Set environment variables (Postgres credentials)
       - name: Set environment variables
         env:
           DB_USER: ${{ secrets.DB_USER }}
@@ -45,27 +43,32 @@ jobs:
         run: |
           echo "✅ Environment variables loaded"
 
-          
-      - name: Test database connection
+      # 5️⃣ Test PostgreSQL connection
+      - name: Test PostgreSQL connection
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASS: ${{ secrets.DB_PASS }}
           DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           python - <<'EOF'
-          import os, mysql.connector
+          import os
+          import psycopg2
+
           try:
-              conn = mysql.connector.connect(
+              conn = psycopg2.connect(
                   host=os.getenv("DB_HOST"),
                   user=os.getenv("DB_USER"),
-                  password=os.getenv("DB_PASS")
+                  password=os.getenv("DB_PASS"),
+                  dbname=os.getenv("DB_NAME")
               )
-              print("✅ Connection successful")
+              print("✅ PostgreSQL connection successful")
+              conn.close()
           except Exception as e:
-              print("❌ Connection failed:", e)
+              print("❌ PostgreSQL connection failed:", e)
           EOF
-          
-      # 5️⃣ Run data update script
+
+      # 6️⃣ Run data fetch & update script
       - name: Run data fetch & update
         env:
           DB_USER: ${{ secrets.DB_USER }}
