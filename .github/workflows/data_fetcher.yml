@@ -2,11 +2,13 @@ name: Fetch and Update Gold Data
 
 
 on:
+  # schedule:
+  #   - cron: "35 14 * * *"   # ✅ Runs every day at 19:05 IST after data_fetcher
   push:
-    branches:
-      - main
-    paths:
-      - 'src/data_preprocess.py'
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
       
   workflow_dispatch:  # allows manual trigger from GitHub UI
 

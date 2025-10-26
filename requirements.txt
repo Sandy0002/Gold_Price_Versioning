@@ -1,5 +1,5 @@
-dotenv
 yfinance
+dotenv
 pandas
 numpy
 scikit-learn
