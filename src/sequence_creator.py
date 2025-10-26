@@ -6,6 +6,7 @@ import sklearn as sk
 from sklearn.preprocessing import MinMaxScaler
 from pathlib import Path
 from src.data_preprocess import fetch_data_postgres
+import os
 
 # Create sequences (lookback = 60 days)
 def create_sequences(data, lookback):
@@ -17,6 +18,8 @@ def create_sequences(data, lookback):
 
 
 def prepare_data():
+    print("DB_HOST:", os.getenv("DB_HOST"))
+    print("DB_NAME:", os.getenv("DB_NAME"))
     df = fetch_data_postgres()
     data = df[["Close"]]
 

@@ -65,9 +65,7 @@ jobs:
 
       - name: Creating and updating model file
         run: |
-          python -m src.forecaster
-      #     python -m metadata_dumper
-    
+          python -m src.sequence_creator
       
       - name: Commit updated model and metadata
         run: |
