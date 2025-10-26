@@ -1,40 +1,99 @@
+import yfinance as yf
+import pandas as pd
+from sqlalchemy import create_engine
 import pandas as pd
 import yfinance as yf
 from datetime import date, timedelta
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
-# --- Configuration of file paths---
-project_root = Path(__file__).resolve().parents[1]
-# Create models directory under project root
-data_dir = project_root / "data"
-data_dir.mkdir(exist_ok=True)
-data_file_path = data_dir / "gold_data.xlsx"
 
-# --- Fetch full history (if needed) ---
-ticker = "GC=F"
-gold = yf.Ticker(ticker)
-df = gold.history(start="2020-01-01", interval="1d")
+# Loading .env file to access the contents in the folder
+load_dotenv()
 
-# --- Fetch today's rate ---
-today = date.today()
-tomorrow = today + timedelta(days=1)
-latest_price = gold.history(start=today, end=tomorrow)
+# Getting database credentials
+username = os.getenv("DB_USER")
+password = os.getenv("DB_PASS")
+host = os.getenv("DB_HOST")
+database = os.getenv("DB_NAME")
+table_name="gold_prices"
 
-# --- Remove timezone info (important for Excel) ---
-df = df.reset_index()
-df["Date"] = pd.to_datetime(df["Date"]).dt.tz_localize(None)
+# ---------- STEP 1: FETCH DATA FROM YFINANCE ----------
+def fetch_gold_data(ticker="GC=F", period="5y", interval="1d"):
+    """
+    Fetch historical gold price data from Yahoo Finance.
+    Default ticker 'GC=F' is Gold Futures.
+    """
 
-latest_price = latest_price.reset_index()
-latest_price["Date"] = pd.to_datetime(latest_price["Date"]).dt.tz_localize(None)
+    engine = create_engine(f"mysql+mysqlconnector://{username}:{password}@{host}/{database}")
+    gold = yf.Ticker("GC=F")
 
-# --- Save or update Excel file ---
-if not os.path.exists(data_file_path):
-    df.to_excel(data_file_path, index=False)
-    print("✅ File created successfully.")
-else:
-    existing_df = pd.read_excel(data_file_path)
-    updated_df = pd.concat([existing_df, latest_price], ignore_index=True)
-    updated_df.drop_duplicates(subset=["Date"], keep="last", inplace=True)
-    updated_df.to_excel(data_file_path, index=False)
-    print("✅ File updated successfully.")
+    # Get the last date in the table (if table exists)
+    try:
+        last_date = pd.read_sql(f"SELECT MAX(Date) AS last_date FROM {table_name}", engine)["last_date"][0]
+        if last_date is not None:
+            start_date = pd.to_datetime(last_date).date() + timedelta(days=1)
+        else:
+            start_date = date.today() - timedelta(days=5)
+    except Exception:
+        start_date = date.today() - timedelta(days=5)
+
+    end_date = date.today()
+
+    df = gold.history(start=start_date, end=end_date, interval="1d").reset_index()
+    if df.empty:
+        print("ℹ️ No new data to fetch.")
+        return df
+
+    # Normalize Date to date only
+    df['Date'] = pd.to_datetime(df['Date']).dt.date
+
+    # Fetch existing dates from DB
+    existing_df = pd.read_sql(f"SELECT Date FROM {table_name}", engine)
+    existing_df['Date'] = pd.to_datetime(existing_df['Date']).dt.date
+
+    # Keep only new rows
+    new_rows = df[~df['Date'].isin(existing_df['Date'])]
+    print(f"✅ {len(new_rows)} new rows ready to insert.")
+    return new_rows
+
+
+# ---------- STEP 2: STORE IN MYSQL ----------
+def store_data_to_mysql(df, table_name="gold_prices"):
+    """
+    Store fetched data into MySQL database using SQLAlchemy.
+    Update the connection string with your credentials.
+    """
+
+    # create connection engine
+    engine = create_engine(f"mysql+mysqlconnector://{username}:{password}@{host}/{database}")
+
+    # Check if table exists
+    if not df.empty:
+        df.to_sql(table_name, engine, if_exists="append", index=False)
+        print(f"✅ Appended {len(df)} new rows to '{table_name}'.")
+    else:
+        print(f"ℹ️ No new rows to append.")
+
+
+# ---------- STEP 3: FETCH FROM MYSQL ----------
+def fetch_data_from_mysql(table_name="gold_prices"):
+    """
+    Fetch stored data from MySQL database back into pandas DataFrame.
+    """
+    engine = create_engine(f"mysql+mysqlconnector://{username}:{password}@{host}/{database}")
+    query = f"SELECT * FROM {table_name}"
+    df = pd.read_sql(query, engine)
+    print(f"✅ Retrieved {len(df)} rows from MySQL table '{table_name}'")
+    return df
+
+
+# ---------- MAIN PIPELINE ----------
+if __name__ == "__main__":
+    df = fetch_gold_data()
+    if len(df)>0:
+      store_data_to_mysql(df)
+    df_retrieved = fetch_data_from_mysql()
+
+    print(df_retrieved.tail())
