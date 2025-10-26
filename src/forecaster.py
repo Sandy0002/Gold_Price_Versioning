@@ -2,7 +2,7 @@
 import numpy as np
 from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from train_model import training
+from src.train_model import training
 from pathlib import Path
 
 xTest,yTest,scaler = training()

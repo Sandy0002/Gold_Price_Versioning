@@ -31,7 +31,7 @@ jobs:
 
       - name: Creating and updating model file
         run: |
-          python -m forecaster
+          python -m src.forecaster
       #     python -m metadata_dumper
     
       
