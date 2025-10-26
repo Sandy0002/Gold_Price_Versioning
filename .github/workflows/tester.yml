@@ -64,6 +64,10 @@ jobs:
           EOF
 
       - name: Creating and updating model file
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-          python -m src.data_preprocess
           python -m src.sequence_creator
