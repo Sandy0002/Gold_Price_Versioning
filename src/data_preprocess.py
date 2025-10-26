@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 # ---------- DATABASE CONNECTION ----------
 def get_engine():
     return create_engine(
