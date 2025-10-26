@@ -5,9 +5,9 @@ import pandas as pd
 import sklearn as sk
 from sklearn.preprocessing import MinMaxScaler
 from pathlib import Path
-from src.data_preprocess import fetch_data_postgres
+# from src.data_preprocess import fetch_data_postgres
 import os
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,6 +17,12 @@ def get_engine():
         f"postgresql+psycopg2://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"
         f"@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
     )
+
+def fetch_data_postgres(table_name="gold_prices"):
+    engine = get_engine()
+    df = pd.read_sql(f"SELECT * FROM {table_name}", engine)
+    print(f"✅ Retrieved {len(df)} rows from '{table_name}'.")
+    return df
 
 # Create sequences (lookback = 60 days)
 def create_sequences(data, lookback):
@@ -28,10 +34,7 @@ def create_sequences(data, lookback):
 
 
 def prepare_data():
-    # print("DB_HOST:", os.getenv("DB_HOST"))
-    # print("DB_NAME:", os.getenv("DB_NAME"))
-    engine = get_engine()
-    df = fetch_data_postgres(engine)
+    df = fetch_data_postgres()
     data = df[["Close"]]
 
     # Scaling data
