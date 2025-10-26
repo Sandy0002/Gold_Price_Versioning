@@ -31,7 +31,7 @@ def prepare_data():
     # print("DB_HOST:", os.getenv("DB_HOST"))
     # print("DB_NAME:", os.getenv("DB_NAME"))
     engine = get_engine()
-    df = fetch_data_postgres()
+    df = fetch_data_postgres(engine)
     data = df[["Close"]]
 
     # Scaling data
