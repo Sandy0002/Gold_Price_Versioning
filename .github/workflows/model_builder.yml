@@ -31,8 +31,9 @@ jobs:
 
       - name: Creating and updating model file
         run: |
-          python -m src.forecaster
-          python -m src.metadata_dumper
+          python -m forecaster
+      #     python -m metadata_dumper
+    
       
       - name: Commit updated model and metadata
         run: |
@@ -47,7 +48,7 @@ jobs:
 
           # Stage files if they exist
           git add models/gold_lstm_model.h5
-          [ -f models/model_metadata.json ] && git add models/model_metadata.json
+          #   [ -f models/model_metadata.json ] && git add models/model_metadata.json
 
           git commit -m "Save model and metadata automatically" || echo "No changes to commit"
           git push origin main
