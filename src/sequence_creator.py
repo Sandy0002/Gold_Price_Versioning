@@ -62,4 +62,6 @@ def prepare_data():
 
     return X_train,X_test,y_train,y_test,scaler
 
-prepare_data()
+# prepare_data()
+df = fetch_data_postgres()
+print(df.tail())
