@@ -1,8 +1,6 @@
 import yfinance as yf
 import pandas as pd
 from sqlalchemy import create_engine
-import pandas as pd
-import yfinance as yf
 from datetime import date, timedelta
 import os
 from pathlib import Path
