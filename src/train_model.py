@@ -3,7 +3,7 @@
 import os
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
-from sequence_creator import prepare_data
+from src.sequence_creator import prepare_data
 from pathlib import Path
 from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_squared_error, r2_score
