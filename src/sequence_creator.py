@@ -46,3 +46,5 @@ def prepare_data():
     y_train, y_test = y[:split], y[split:]
 
     return X_train,X_test,y_train,y_test,scaler
+
+prepare_data()
