@@ -45,6 +45,3 @@ def prepare_data():
     y_train, y_test = y[:split], y[split:]
 
     return X_train,X_test,y_train,y_test,scaler
-
-xTrain,xTest,yTrain,yTest,scaler = prepare_data()
-print(xTrain.shape,yTrain.shape,xTest.shape,yTest.shape)
