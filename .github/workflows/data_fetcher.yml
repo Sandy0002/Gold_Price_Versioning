@@ -2,7 +2,7 @@ name: Fetch and Update Gold Data
 
 on:
   schedule:
-    - cron: "35 14 * * *"   # Optional: Runs daily at 20:05 IST
+    - cron: "40 14 * * *"   # Optional: Runs daily at 20:10 IST
     
   # push:
   #   branches: [ main ]
