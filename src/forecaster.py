@@ -1,9 +1,9 @@
 # This program will generate predictions for future period
 import numpy as np
+from pathlib import Path
 from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from src.train_model import training
-from pathlib import Path
 
 xTest,yTest,scaler = training()
 
