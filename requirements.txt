@@ -5,6 +5,5 @@ numpy
 scikit-learn
 sqlalchemy
 pathlib
-# mysql-connector-python
 psycopg2-binary
 tensorflow

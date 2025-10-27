@@ -1,6 +1,5 @@
 # In this program we will be training data by taking inputs from sequence_creator.py 
 
-import os
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from src.sequence_creator import prepare_data
@@ -69,5 +68,3 @@ def training():
     modelUpdater(newModel,xTest,yTest)
 
     return xTest,yTest,scaler
-
-training()

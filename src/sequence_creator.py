@@ -45,3 +45,7 @@ def prepare_data():
     y_train, y_test = y[:split], y[split:]
 
     return X_train,X_test,y_train,y_test,scaler
+
+df = fetch_data_postgres()
+print("Fetched data:",df.shape)
+print(df.tail())
