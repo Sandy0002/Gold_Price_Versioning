@@ -1,12 +1,12 @@
 name: Tester
 
 on:
-  # schedule:
-  #   - cron: "35 14 * * *"   # ✅ Runs every day at 19:05 IST after data_fetcher
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  schedule:
+    - cron: "35 14 * * *"   # ✅ Runs every day at 19:05 IST after data_fetcher
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
 
 
 permissions:

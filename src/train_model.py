@@ -68,6 +68,3 @@ def training():
     modelUpdater(newModel,xTest,yTest)
 
     return xTest,yTest,scaler
-
-xTrain,xTest,yTrain,yTest,scaler = prepare_data()
-print(xTrain.shape,yTrain.shape,xTest.shape,yTest.shape)
