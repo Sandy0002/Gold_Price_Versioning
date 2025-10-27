@@ -5,9 +5,9 @@ on:
     branches:
       - main
     paths:
-      # - 'src/**'
+      - 'src/**'
       - 'models/**'
-      # - 'requirements.txt'
+      - 'requirements.txt'
       - 'Dockerfile'
   workflow_dispatch:  # allows manual trigger from GitHub UI
 
