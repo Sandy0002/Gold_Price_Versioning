@@ -70,5 +70,4 @@ jobs:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-          python -m src.sequence_creator
-          # python -m src.train_model
+          python -m src.train_model
