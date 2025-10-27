@@ -9,7 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 import yfinance as yf
 from datetime import date
 from sqlalchemy import create_engine, inspect
-from database import execute
+import database as db
 import time
 
 
@@ -71,5 +71,21 @@ def db_health():
         result = db.execute("SELECT 1;")
         latency = time.time() - start
         return {"status": "ready", "latency": latency}
+    except Exception as e:
+        return {"status": "error", "details": str(e)}, 500
+
+
+# Checking if model is able to predict or not
+@app.get("/health/predict")
+def predict_health():
+    try:
+        test_input = {"days": 1}
+        response = requests.post("https://yourapp.onrender.com/predict", json=test_input)
+        if response.status_code != 200:
+            raise ValueError("Predict endpoint failed")
+        data = response.json()
+        if "prediction" not in data or data["prediction"] is None:
+            raise ValueError("Invalid prediction output")
+        return {"status": "ready", "details": "Prediction OK"}
     except Exception as e:
         return {"status": "error", "details": str(e)}, 500

@@ -1,0 +1,72 @@
+name: Model Building
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+
+permissions:
+  contents: write  
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      
+      - name: Set environment variables
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          echo "✅ Environment variables loaded"
+
+      # 5️⃣ Test PostgreSQL connection
+      - name: Test PostgreSQL connection
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          python - <<'EOF'
+          import os
+          import psycopg2
+
+          try:
+              conn = psycopg2.connect(
+                  host=os.getenv("DB_HOST"),
+                  user=os.getenv("DB_USER"),
+                  password=os.getenv("DB_PASS"),
+                  dbname=os.getenv("DB_NAME")
+              )
+              print("✅ PostgreSQL connection successful")
+              conn.close()
+          except Exception as e:
+              print("❌ PostgreSQL connection failed:", e)
+          EOF
+
+      - name: Creating and updating model file
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+
+        run: |
+          python -m src.forecaster
