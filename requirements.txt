@@ -6,4 +6,4 @@ scikit-learn
 sqlalchemy
 pathlib
 psycopg2-binary
-tensorflow
+tensorflow-cpu==2.15.0
