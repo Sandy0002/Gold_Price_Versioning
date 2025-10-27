@@ -69,3 +69,5 @@ def training():
     modelUpdater(newModel,xTest,yTest)
 
     return xTest,yTest,scaler
+
+training()
