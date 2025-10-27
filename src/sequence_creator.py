@@ -18,7 +18,6 @@ def create_sequences(data, lookback):
 
 
 def prepare_data():
-    print("Before fetching data")
     try:
         df = fetch_data_postgres()
         print(f"✅ Fetched {len(df)} rows from database")
@@ -30,7 +29,6 @@ def prepare_data():
         print("⚠️ Empty dataframe received from DB")
         return np.array([]), np.array([]), np.array([]), np.array([]), None
 
-    print("After fetching data")
     data = df[["Close"]]
 
     # Scaling data
@@ -39,9 +37,7 @@ def prepare_data():
     print(scaled_data)
     lookback = 60
 
-    print("Before sequence cretion")
     X, y = create_sequences(scaled_data, lookback)
-    print("After sequence cretion")
 
     # That line reshapes X so it matches the 3D input format LSTMs expect: [samples, timesteps, features]
     '''
@@ -53,11 +49,9 @@ def prepare_data():
 '''
     X = np.reshape(X, (X.shape[0], X.shape[1], 1))  # [samples, timesteps, features]
 
-    print("Before reshaping")
     # Train / test split
     split = int(len(X) * 0.7)
     X_train, X_test = X[:split], X[split:]
     y_train, y_test = y[:split], y[split:]
 
-    print("After reshaping")
     return X_train,X_test,y_train,y_test,scaler
