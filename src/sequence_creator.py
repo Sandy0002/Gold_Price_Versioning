@@ -46,6 +46,5 @@ def prepare_data():
 
     return X_train,X_test,y_train,y_test,scaler
 
-df = fetch_data_postgres()
-print("Fetched data:",df.shape)
-print(df.tail())
+xTrain,xTest,yTrain,yTest,scaler = prepare_data()
+print(xTrain.shape,yTrain.shape,xTest.shape,yTest.shape)
