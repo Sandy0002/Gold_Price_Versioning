@@ -1,4 +1,4 @@
-### End to end model creation to deployed has been done using postgres
+### End to end model creation to deployment has been done using postgres
 
 ### People looking to interact can use below link
 **Note:** It takes atleast 60 values in a list format to give prediction.<br>
