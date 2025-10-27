@@ -8,9 +8,16 @@ from pathlib import Path
 from sklearn.preprocessing import MinMaxScaler
 import yfinance as yf
 from datetime import date
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine
 import database as db
 import time
+import requests
+
+
+project_root = Path(__file__).resolve().parents[1]
+scaler = MinMaxScaler()
+models_dir =project_root / "models"
+model = models_dir /"gold_lstm_model.h5"
 
 
 # ---------- DATABASE CONNECTION ----------
@@ -33,12 +40,8 @@ def root():
 # Check if model is accessible or not and is loading or not
 @app.get("/health/model")
 def model_health():
-      project_root = Path(__file__).resolve().parents[1]
-      models_dir =project_root / "models"
-      model = models_dir /"gold_lstm_model.h5"
       # metadata = models_dir / "model_metadata.json"
       scaler = MinMaxScaler()
-
       try:
             model = load_model(model)
             # with open(metadata, "r") as f:
@@ -76,16 +79,64 @@ def db_health():
 
 
 # Checking if model is able to predict or not
-@app.get("/health/predict")
+from fastapi import APIRouter
+import numpy as np
+import requests, json, time
+from pathlib import Path
+from tensorflow.keras.models import load_model
+from sklearn.preprocessing import MinMaxScaler
+
+router = APIRouter(prefix="/health")
+
+
+
+@router.get("/health/predict")
 def predict_health():
     try:
-        test_input = {"days": 1}
-        response = requests.post("https://yourapp.onrender.com/predict", json=test_input)
+        start_time = time.time()
+
+        # 1️⃣ Load input file
+        input_folder = project_root / "test_inputs"
+        input_file = input_folder / "inputs.json"
+        with open(input_file, "r") as f:
+            test_input = json.load(f)
+
+        # Expecting structure like: { "features": [list of last 60 prices] }
+        if "features" not in test_input:
+            raise ValueError("Missing 'features' key in test_inputs/inputs.json")
+
+        # 2️⃣ Prepare data for LSTM
+        features = np.array(test_input["features"]).reshape(-1, 1)
+        if features.shape[0] != 60:
+            raise ValueError(f"Expected 60 lookback days, got {features.shape[0]}")
+
+        scaled_features = scaler.fit_transform(features)
+        X_input = scaled_features.reshape(1, 60, 1)
+
+        # 3️⃣ Local model prediction (internal model sanity)
+        scaled_pred = model.predict(X_input)[0][0]
+        local_pred = scaler.inverse_transform([[scaled_pred]])[0][0]
+
+        # 4️⃣ Test deployed /predict endpoint
+        PREDICT_URL = "https://gold-price-monitoring.onrender.com/predict"
+        response = requests.post(PREDICT_URL, json=test_input, timeout=20)
+
         if response.status_code != 200:
-            raise ValueError("Predict endpoint failed")
+            raise ValueError(f"/predict endpoint failed: {response.status_code} - {response.text}")
+
         data = response.json()
         if "prediction" not in data or data["prediction"] is None:
-            raise ValueError("Invalid prediction output")
-        return {"status": "ready", "details": "Prediction OK"}
+            raise ValueError("Invalid prediction structure from endpoint")
+
+        latency = round(time.time() - start_time, 3)
+
+        return {
+            "status": "ready",
+            "details": {
+                "latency_seconds": latency,
+                "message": "Model and endpoint both responding correctly"
+            }
+        }
+
     except Exception as e:
         return {"status": "error", "details": str(e)}, 500
