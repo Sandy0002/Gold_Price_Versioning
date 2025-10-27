@@ -7,10 +7,6 @@ from sklearn.preprocessing import MinMaxScaler
 from pathlib import Path
 from src.data_preprocess import fetch_data_postgres
 import os
-from sqlalchemy import create_engine
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # Create sequences (lookback = 60 days)
 def create_sequences(data, lookback):
