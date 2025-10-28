@@ -1,5 +1,5 @@
 import numpy as np
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 import os
 from pathlib import Path
 from sklearn.preprocessing import MinMaxScaler
@@ -12,13 +12,11 @@ import requests
 import json
 
 
-health_checklist={}
-
 project_root = Path(__file__).resolve().parents[1]
 scaler = MinMaxScaler()
 models_dir =project_root / "models"
 model_path = models_dir /"gold_lstm_model.h5"
-model = load_model(model_path)
+# model = load_model(model_path)
 BASE_URL = "https://gold-price-monitoring-1.onrender.com/"
 
 # Frontend to backend health checks
@@ -44,10 +42,12 @@ def frontend_checker():
       "About model":  "/about_model"  # model info endpoint
     }
 
+    front_end_checklist = {}
     for identifier,ep in endpoints.items():
         response = check_endpoint(ep)
-        health_checklist[identifier] = response
-        print("--------------------------------------------")
+        front_end_checklist[identifier] = response
+
+    return front_end_checklist
 
 # Testing if our model is able to give predictions on live
 def model_pred_test():
@@ -106,68 +106,35 @@ def model_health():
     scaler = MinMaxScaler()
 
     if model is None:
-        # return {"status": "❌ Error", "details": str(e)},500
-        print(f'status": "❌ Failed to load model')
+        return {"status": "❌ Error", "details": str(e)},500
+        # print(f'status": "❌ Failed to load model')
 
     else:  
-        # return {"status": " ✅ready", "details": "model loaded succsesfully"}
-        print(f'status": "✅ready", "details": "model loaded succsesfully')
-  
-        
-
-
-# def predict_health():
-#     try:
-#         start_time = time.time()
-
-#         # 1️⃣ Load input file
-#         input_folder = project_root / "test_inputs"
-#         input_file = input_folder / "inputs.json"
-#         with open(input_file, "r") as f:
-#             test_input = json.load(f)
-
-#         # Expecting structure like: { "features": [list of last 60 prices] }
-#         if "features" not in test_input:
-#             raise ValueError("Missing 'features' key in test_inputs/inputs.json")
-
-#         # 2️⃣ Prepare data for LSTM
-#         features = np.array(test_input["features"]).reshape(-1, 1)
-#         if features.shape[0] != 60:
-#             raise ValueError(f"Expected 60 lookback days, got {features.shape[0]}")
-
-#         scaled_features = scaler.fit_transform(features)
-#         X_input = scaled_features.reshape(1, 60, 1)
-#         model = load_model(model_path)
-        
-#         # 3️⃣ Local model prediction (internal model sanity)
-#         scaled_pred = model.predict(X_input)[0][0]
-#         local_pred = scaler.inverse_transform([[scaled_pred]])[0][0]
-
-#         # 4️⃣ Test deployed /predict endpoint
-#         PREDICT_URL = "https://gold-price-monitoring.onrender.com/predict"
-#         response = requests.post(PREDICT_URL, json=test_input, timeout=20)
-
-#         if response.status_code != 200:
-#             raise ValueError(f"/predict endpoint failed: {response.status_code} - {response.text}")
-
-#         data = response.json()
-#         if "prediction" not in data or data["prediction"] is None:
-#             raise ValueError("Invalid prediction structure from endpoint")
-
-#         latency = round(time.time() - start_time, 3)
-
-#         return {
-#             "status": "✅ ready",
-#             "details": {
-#                 "latency_seconds": latency   }
-#         }
-
-#     except Exception as e:
-#         return {"status": "❌ Error", "details": str(e)}, 500
+        return {"status": " ✅ready", "details": "model loaded succsesfully"}
+        # print(f'status": "✅ready", "details": "model loaded succsesfully')
 
 if __name__=='__main__':
-    # frontend_checker()
-    # model_pred_test()
-    # db_health()
-    # data_source_health()
-    model_health()
+    health_checks_checklist = {
+        "GET request":frontend_checker,
+        "POST request":model_pred_test,
+        "Database connectivity":db_health,
+        "Data source": data_source_health,
+        "Model loading": model_health
+    }
+    
+    # to store the status of each health check
+    results = {}
+    for name, func in health_checks_checklist.items():
+        response = func()
+        # print(type(response))
+        if isinstance(response, dict):
+            for sub_key, sub_value in response.items():
+                # Combine parent name and sub-check name for clarity
+                identifier = f"{name}.{sub_key}"
+                results[identifier] = sub_value
+        else:
+            results[name] = response
+        
+    for name, status in results.items():
+        print(f'{name} : {status}')
+        print("--------------------------------------------")

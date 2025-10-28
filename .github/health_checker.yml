@@ -4,10 +4,10 @@ on:
   schedule:
     - cron: "45 14 * * *"   # ✅ Runs every day at 20:15 IST after data_fetcher
     
-  # push:
-  #   branches: [ main ]
-  # pull_request:
-  #   branches: [ main ]
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 
 permissions:
@@ -72,42 +72,5 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
 
         run: |
-          python -m src.forecaster
+          python -m src.health_checks
           
-      - name: Commit updated model
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
-          # Ensure full history
-          git fetch --prune --unshallow || echo "Already full clone"
-
-          git checkout main
-          git pull origin main
-
-          # Stage files if they exist
-          # git add models/gold_lstm_model.h5
-          git add models/gold_lstm_model.keras
-
-          git commit -m "Saved model automatically" || echo "No changes to commit"
-          git push origin main
-      
-      - name: "Creating and updating metadata"
-        run : |
-            python -m src.metadata_updater
-      
-      - name: Commit updated model
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
-          # Ensure full history
-          git fetch --prune --unshallow || echo "Already full clone"
-
-          git checkout main
-          git pull origin main
-
-          [ -f models/model_metadata.json ] && git add models/model_metadata.json
-
-          git commit -m "Save model metadata automatically" || echo "No changes to commit"
-          git push origin main
