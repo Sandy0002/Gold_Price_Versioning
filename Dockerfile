@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the code
 COPY ./src ./src
 COPY ./models ./models
+COPY ./test_inputs ./test_inputs
 
 # Expose port 8000 (Render expects a web service)
 EXPOSE 8000
