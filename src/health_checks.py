@@ -16,7 +16,7 @@ project_root = Path(__file__).resolve().parents[1]
 scaler = MinMaxScaler()
 models_dir =project_root / "models"
 model_path = models_dir /"gold_lstm_model.h5"
-# model = load_model(model_path)
+model = load_model(model_path)
 BASE_URL = "https://gold-price-monitoring-1.onrender.com/"
 
 # Frontend to backend health checks
