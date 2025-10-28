@@ -126,8 +126,8 @@ def db_health():
 #     except Exception as e:
 #         return {"status": "error", "details": str(e)}, 500
 
-if __name__ == "__main__":
-    import uvicorn
-    app = FastAPI()
-    app.include_router(router)
-    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
+# if __name__ == "__main__":
+#     import uvicorn
+#     app = FastAPI()
+#     app.include_router(router)
+#     uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
