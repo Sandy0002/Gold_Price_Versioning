@@ -20,6 +20,7 @@ models_dir =project_root / "models"
 model_path = models_dir /"gold_lstm_model.h5"
 
 
+
 # ---------- DATABASE CONNECTION ----------
 def get_engine():
     return create_engine(
@@ -31,8 +32,11 @@ def get_engine():
 # ===============================
 # app = FastAPI(title="Health checks API", version="1.0")
 router = APIRouter()
+app = FastAPI()
+
 # To check if home page is active
-@router.get("/")
+# @router.get("/")
+@app.get("/")
 def root():
     return {"status": "alive", "version": "v1.0.0"}
 
@@ -50,7 +54,8 @@ def root():
 
 
 # Checking if yfinance is accessible or not to be able to fetch data
-@router.get("/health/data_source")
+# @router.get("/health/data_source")
+@app.get("/health/data_source")
 def data_source_health():
     try:
       gold = yf.Ticker("GC=F")
@@ -62,7 +67,8 @@ def data_source_health():
         return {"status": "error", "details": str(e)}, 500
 
 # Checking if database is accessible or not
-@router.get("/health/db")
+# @router.get("/health/db")
+@app.get("/health/db")
 def db_health():
     try:
         engine = get_engine()
@@ -126,8 +132,8 @@ def db_health():
 #     except Exception as e:
 #         return {"status": "error", "details": str(e)}, 500
 
-# if __name__ == "__main__":
-#     import uvicorn
-#     app = FastAPI()
-#     app.include_router(router)
-#     uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
+if __name__ == "__main__":
+    import uvicorn
+    
+    app.include_router(router)
+    # uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)

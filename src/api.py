@@ -10,7 +10,10 @@ from sklearn.preprocessing import MinMaxScaler
 # ===============================
 # 1. Initialize FastAPI app
 # ===============================
+# router = APIRouter(prefix="/gold", tags=["Gold Price Forecasting"])
 router = APIRouter(prefix="/gold", tags=["Gold Price Forecasting"])
+app = FastAPI(title="Gold Price Forecasting API")
+
 # app = FastAPI()  # <-- Define app here
 # app.include_router(router)
 
@@ -51,11 +54,13 @@ except Exception as e:
 
 # 4. Root endpoint
 # ===============================
-@router.get("/")
+# @router.get("/")
+@app.get("/")
 def root():
     return {"message": "Welcome to the Gold Price Forecasting API!"}
 
-@router.get("/about_model")
+# @router.get("/about_model")
+@app.get("/about_model")
 def about_model():
     """Return information about the currently deployed model."""
     models_dir = Path(__file__).resolve().parents[1] / "models"
@@ -77,7 +82,8 @@ def about_model():
 
 # 5. Prediction endpoint
 # ===============================
-@router.post("/predict")
+# @router.post("/predict")
+@app.post("/predict")
 def predict(data: InputData):
     if model is None:
         raise HTTPException(status_code=500, detail="Model not loaded.")
