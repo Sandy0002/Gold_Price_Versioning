@@ -2,16 +2,12 @@ name: Health Checkouts
 
 on:
   schedule:
-    - cron: "0 */6 * * *"   # ✅ Runs every day at 20:15 IST after data_fetcher
+    - cron: "0 */6 * * *"   # ✅ Runs in every 6 hours
     
   # push:
   #   branches: [ main ]
   # pull_request:
   #   branches: [ main ]
-
-
-permissions:
-  contents: write  
 
 jobs:
   test:
