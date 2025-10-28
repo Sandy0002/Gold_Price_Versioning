@@ -1,14 +1,24 @@
-# src/app.py
 from fastapi import FastAPI
-from src.api import router as main_router
-from src.health_checks import router as health_router
+from src.api import app as main_api
+from src.health_checks import app as health_api
 
-app = FastAPI(title="Gold Price Forecasting APIs")
+# ----------------------------
+# Master FastAPI application
+# ----------------------------
+app = FastAPI(title="Gold Price Forecasting - Unified API", version="1.0")
 
-# include all routers
-app.include_router(main_router, prefix="/main")
-app.include_router(health_router, prefix="/health")
+# Mount sub-apps under clean URL prefixes
+app.mount("/", main_api)
+app.mount("/health", health_api)
 
-@app.get("/")
-def root():
-    return {"status": "running"}
+# Root route for sanity check
+@app.get("/status")
+def status():
+    return {"status": "running", "message": "Unified API is live on Render"}
+
+# ----------------------------
+# Optional: run locally
+# ----------------------------
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("src.app:app", host="127.0.0.1", port=8000, reload=True)
