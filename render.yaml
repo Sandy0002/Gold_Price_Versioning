@@ -10,7 +10,7 @@ services:
     name: gold-price-api
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn src.api.api_app:app --host 0.0.0.0 --port $PORT
+    startCommand: uvicorn src.api:app --host 0.0.0.0 --port $PORT
     plan: free
     autoDeploy: true
 
@@ -18,6 +18,6 @@ services:
     name: gold-health-checks
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn src.health.health_app:app --host 0.0.0.0 --port $PORT
+    startCommand: uvicorn src.health_checks:app --host 0.0.0.0 --port $PORT
     plan: free
     autoDeploy: true
