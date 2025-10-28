@@ -1,7 +1,7 @@
 import yfinance as yf
 import pandas as pd
-from sqlalchemy import create_engine, inspect
 from datetime import date, timedelta
+from sqlalchemy import create_engine, inspect
 import os
 from dotenv import load_dotenv
 
