@@ -9,15 +9,15 @@ from sklearn.preprocessing import MinMaxScaler
 import yfinance as yf
 from datetime import date
 from sqlalchemy import create_engine
-import database as db
+import src.database as db
 import time
 import requests
-
+import uvicorn
 
 project_root = Path(__file__).resolve().parents[1]
 scaler = MinMaxScaler()
 models_dir =project_root / "models"
-model = models_dir /"gold_lstm_model.h5"
+model_path = models_dir /"gold_lstm_model.h5"
 
 
 # ---------- DATABASE CONNECTION ----------
@@ -36,21 +36,17 @@ app = FastAPI(title="Health checks API", version="1.0")
 def root():
     return {"status": "alive", "version": "v1.0.0"}
 
-
 # Check if model is accessible or not and is loading or not
 @app.get("/health/model")
 def model_health():
-      # metadata = models_dir / "model_metadata.json"
-      scaler = MinMaxScaler()
-      try:
-            model = load_model(model)
-            # with open(metadata, "r") as f:
-            #       metadata = json.load(f)
-            return {"status": "ready", "details": "Model loaded successfully"}
-      except Exception as e:
-            return {"status": "error", "details": str(e)}, 500
-            # model = None
-            # metadata = {}
+    project_root = Path(__file__).resolve().parents[1]
+    scaler = MinMaxScaler()
+
+    try:
+        model = load_model(model_path)
+        return {"status": "ready", "details": "model loaded succsesfully"}
+    except Exception as e:
+        return {"status": "error", "details": str(e)},500
 
 
 # Checking if yfinance is accessible or not to be able to fetch data
@@ -78,19 +74,7 @@ def db_health():
         return {"status": "error", "details": str(e)}, 500
 
 
-# Checking if model is able to predict or not
-from fastapi import APIRouter
-import numpy as np
-import requests, json, time
-from pathlib import Path
-from tensorflow.keras.models import load_model
-from sklearn.preprocessing import MinMaxScaler
-
-router = APIRouter(prefix="/health")
-
-
-
-@router.get("/health/predict")
+@app.get("/health/predict")
 def predict_health():
     try:
         start_time = time.time()
@@ -112,7 +96,8 @@ def predict_health():
 
         scaled_features = scaler.fit_transform(features)
         X_input = scaled_features.reshape(1, 60, 1)
-
+        model = load_model(model_path)
+        
         # 3️⃣ Local model prediction (internal model sanity)
         scaled_pred = model.predict(X_input)[0][0]
         local_pred = scaler.inverse_transform([[scaled_pred]])[0][0]
@@ -140,3 +125,7 @@ def predict_health():
 
     except Exception as e:
         return {"status": "error", "details": str(e)}, 500
+
+if __name__ == "__main__":
+    
+    uvicorn.run("src.api:app", host="127.0.0.1", port=8000, reload=True)
