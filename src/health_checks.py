@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from fastapi import FastAPI, HTTPException
+from fastapi import APIRouter
 import numpy as np
 from tensorflow.keras.models import load_model
 import json
@@ -29,15 +29,15 @@ def get_engine():
 
 # 1. Initialize FastAPI app
 # ===============================
-app = FastAPI(title="Health checks API", version="1.0")
-
+# app = FastAPI(title="Health checks API", version="1.0")
+router = APIRouter()
 # To check if home page is active
-@app.get("/")
+@router.get("/")
 def root():
     return {"status": "alive", "version": "v1.0.0"}
 
 # Check if model is accessible or not and is loading or not
-@app.get("/health/model")
+@router.get("/health/model")
 def model_health():
     project_root = Path(__file__).resolve().parents[1]
     scaler = MinMaxScaler()
@@ -50,7 +50,7 @@ def model_health():
 
 
 # Checking if yfinance is accessible or not to be able to fetch data
-@app.get("/health/data_source")
+@router.get("/health/data_source")
 def data_source_health():
     try:
       gold = yf.Ticker("GC=F")
@@ -62,7 +62,7 @@ def data_source_health():
         return {"status": "error", "details": str(e)}, 500
 
 # Checking if database is accessible or not
-@app.get("/health/db")
+@router.get("/health/db")
 def db_health():
     try:
         engine = get_engine()
@@ -74,7 +74,7 @@ def db_health():
         return {"status": "error", "details": str(e)}, 500
 
 
-@app.get("/health/predict")
+@router.get("/health/predict")
 def predict_health():
     try:
         start_time = time.time()
