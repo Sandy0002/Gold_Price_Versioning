@@ -64,7 +64,7 @@ jobs:
               print("❌ PostgreSQL connection failed:", e)
           EOF
 
-      - name: Creating and updating model file
+      - name: Performing health checkouts
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASS: ${{ secrets.DB_PASS }}

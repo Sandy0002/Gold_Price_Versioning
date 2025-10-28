@@ -6,7 +6,7 @@ from sklearn.preprocessing import MinMaxScaler
 import yfinance as yf
 from datetime import date
 from sqlalchemy import create_engine
-import database as db
+import src.database as db
 import time
 import requests
 import json
