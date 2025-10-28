@@ -20,7 +20,6 @@ def create_sequences(data, lookback):
 def prepare_data():
     try:
         df = fetch_data_postgres()
-        print(f"✅ Fetched {len(df)} rows from database")
     except Exception as e:
         print("❌ Database fetch failed:", e)
         raise
