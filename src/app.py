@@ -5,7 +5,8 @@ from src.health_checks import router as health_router
 app = FastAPI(title="Gold Price Forecasting - Unified API", version="1.0")
 
 app.include_router(api_router)
-app.include_router(health_router)
+app.include_router(health_router)               # Health check routes (/health/…)
+
 
 @app.get("/status")
 def status():

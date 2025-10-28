@@ -10,8 +10,8 @@ from sklearn.preprocessing import MinMaxScaler
 # ===============================
 # 1. Initialize FastAPI app
 # ===============================
-# app = FastAPI(title="Gold Price Forecasting API", version="1.0")
-router = APIRouter()
+router = APIRouter(prefix="/gold", tags=["Gold Price Forecasting"])
+
 
 '''
 1. class InputData(BaseModel):
@@ -108,4 +108,7 @@ def predict(data: InputData):
 # ===============================
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("src.api:app", host="127.0.0.1", port=8000, reload=True)
+    from fastapi import FastAPI
+    app = FastAPI()
+    app.include_router(router)
+    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)

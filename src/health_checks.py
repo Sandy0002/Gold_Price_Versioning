@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from fastapi import APIRouter
+from fastapi import APIRouter,FastAPI
 import numpy as np
 from tensorflow.keras.models import load_model
 import json
@@ -127,5 +127,7 @@ def predict_health():
         return {"status": "error", "details": str(e)}, 500
 
 if __name__ == "__main__":
-    
-    uvicorn.run("src.health_checks:app", host="127.0.0.1", port=8000, reload=True)
+    import uvicorn
+    app = FastAPI()
+    app.include_router(router)
+    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
