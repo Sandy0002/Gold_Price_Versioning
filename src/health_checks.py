@@ -37,16 +37,16 @@ def root():
     return {"status": "alive", "version": "v1.0.0"}
 
 # Check if model is accessible or not and is loading or not
-@router.get("/health/model")
-def model_health():
-    project_root = Path(__file__).resolve().parents[1]
-    scaler = MinMaxScaler()
+# @router.get("/health/model")
+# def model_health():
+#     project_root = Path(__file__).resolve().parents[1]
+#     scaler = MinMaxScaler()
 
-    try:
-        model = load_model(model_path)
-        return {"status": "ready", "details": "model loaded succsesfully"}
-    except Exception as e:
-        return {"status": "error", "details": str(e)},500
+#     try:
+#         model = load_model(model_path)
+#         return {"status": "ready", "details": "model loaded succsesfully"}
+#     except Exception as e:
+#         return {"status": "error", "details": str(e)},500
 
 
 # Checking if yfinance is accessible or not to be able to fetch data
@@ -74,57 +74,57 @@ def db_health():
         return {"status": "error", "details": str(e)}, 500
 
 
-@router.get("/health/predict")
-def predict_health():
-    try:
-        start_time = time.time()
+# @router.get("/health/predict")
+# def predict_health():
+#     try:
+#         start_time = time.time()
 
-        # 1️⃣ Load input file
-        input_folder = project_root / "test_inputs"
-        input_file = input_folder / "inputs.json"
-        with open(input_file, "r") as f:
-            test_input = json.load(f)
+#         # 1️⃣ Load input file
+#         input_folder = project_root / "test_inputs"
+#         input_file = input_folder / "inputs.json"
+#         with open(input_file, "r") as f:
+#             test_input = json.load(f)
 
-        # Expecting structure like: { "features": [list of last 60 prices] }
-        if "features" not in test_input:
-            raise ValueError("Missing 'features' key in test_inputs/inputs.json")
+#         # Expecting structure like: { "features": [list of last 60 prices] }
+#         if "features" not in test_input:
+#             raise ValueError("Missing 'features' key in test_inputs/inputs.json")
 
-        # 2️⃣ Prepare data for LSTM
-        features = np.array(test_input["features"]).reshape(-1, 1)
-        if features.shape[0] != 60:
-            raise ValueError(f"Expected 60 lookback days, got {features.shape[0]}")
+#         # 2️⃣ Prepare data for LSTM
+#         features = np.array(test_input["features"]).reshape(-1, 1)
+#         if features.shape[0] != 60:
+#             raise ValueError(f"Expected 60 lookback days, got {features.shape[0]}")
 
-        scaled_features = scaler.fit_transform(features)
-        X_input = scaled_features.reshape(1, 60, 1)
-        model = load_model(model_path)
+#         scaled_features = scaler.fit_transform(features)
+#         X_input = scaled_features.reshape(1, 60, 1)
+#         model = load_model(model_path)
         
-        # 3️⃣ Local model prediction (internal model sanity)
-        scaled_pred = model.predict(X_input)[0][0]
-        local_pred = scaler.inverse_transform([[scaled_pred]])[0][0]
+#         # 3️⃣ Local model prediction (internal model sanity)
+#         scaled_pred = model.predict(X_input)[0][0]
+#         local_pred = scaler.inverse_transform([[scaled_pred]])[0][0]
 
-        # 4️⃣ Test deployed /predict endpoint
-        PREDICT_URL = "https://gold-price-monitoring.onrender.com/predict"
-        response = requests.post(PREDICT_URL, json=test_input, timeout=20)
+#         # 4️⃣ Test deployed /predict endpoint
+#         PREDICT_URL = "https://gold-price-monitoring.onrender.com/predict"
+#         response = requests.post(PREDICT_URL, json=test_input, timeout=20)
 
-        if response.status_code != 200:
-            raise ValueError(f"/predict endpoint failed: {response.status_code} - {response.text}")
+#         if response.status_code != 200:
+#             raise ValueError(f"/predict endpoint failed: {response.status_code} - {response.text}")
 
-        data = response.json()
-        if "prediction" not in data or data["prediction"] is None:
-            raise ValueError("Invalid prediction structure from endpoint")
+#         data = response.json()
+#         if "prediction" not in data or data["prediction"] is None:
+#             raise ValueError("Invalid prediction structure from endpoint")
 
-        latency = round(time.time() - start_time, 3)
+#         latency = round(time.time() - start_time, 3)
 
-        return {
-            "status": "ready",
-            "details": {
-                "latency_seconds": latency,
-                "message": "Model and endpoint both responding correctly"
-            }
-        }
+#         return {
+#             "status": "ready",
+#             "details": {
+#                 "latency_seconds": latency,
+#                 "message": "Model and endpoint both responding correctly"
+#             }
+#         }
 
-    except Exception as e:
-        return {"status": "error", "details": str(e)}, 500
+#     except Exception as e:
+#         return {"status": "error", "details": str(e)}, 500
 
 if __name__ == "__main__":
     import uvicorn

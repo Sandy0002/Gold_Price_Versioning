@@ -11,8 +11,8 @@ from sklearn.preprocessing import MinMaxScaler
 # 1. Initialize FastAPI app
 # ===============================
 router = APIRouter(prefix="/gold", tags=["Gold Price Forecasting"])
-
-
+app = FastAPI()  # <-- Define app here
+app.include_router(router)
 '''
 1. class InputData(BaseModel):
 You’re defining a data model (or schema) named InputData. It inherits from BaseModel, which comes from Pydantic — the library FastAPI uses for automatic validation and serialization of request data.
