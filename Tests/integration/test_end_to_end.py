@@ -57,7 +57,7 @@ def test_full_pipeline_end_to_end(monkeypatch, tmp_path):
     tr.modelUpdater(model, X_test, y_test)
 
     # 5️⃣ Ensure model was saved
-    project_root = Path(__file__).resolve().parents[1]
+    project_root = Path(__file__).resolve().parents[2]
     model_path = project_root / "models" / "gold_lstm_model.h5"
     assert model_path.exists()# skip actual save check
 
