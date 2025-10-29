@@ -36,8 +36,6 @@ def test_full_pipeline_end_to_end(monkeypatch, tmp_path):
     import src.train_model as tr
     monkeypatch.setattr(tr, "Path", lambda *a, **k: tmp_path / "src")
 
-
-
     # 2️⃣ Prepare data (sequence creation + scaling)
     X_train, X_test, y_train, y_test, scaler = sc.prepare_data()
 

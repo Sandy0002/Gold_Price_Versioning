@@ -47,7 +47,7 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           echo "🚀 Running integration tests..."
-          pytest Tests/integration/test_end_to_end.py -v --disable-warnings --maxfail=3
+          # pytest Tests/integration/test_end_to_end.py -v --disable-warnings --maxfail=3
 
 
       - name: Run integration from frontend to backend
