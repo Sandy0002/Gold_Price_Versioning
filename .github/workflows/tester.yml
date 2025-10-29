@@ -2,11 +2,11 @@ name: 🧪 Run Tests
 
 on:
   schedule:
-    - cron: "0 */6 * * *"   # ✅ Runs in every 6 hours
-  push:
-    branches: [ main]
-  pull_request:
-    branches: [ main]
+    - cron: "00 15 * * *" 
+  # push:
+  #   branches: [ main]
+  # pull_request:
+  #   branches: [ main]
 
 jobs:
   test:
