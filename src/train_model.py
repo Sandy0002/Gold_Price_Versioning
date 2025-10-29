@@ -26,7 +26,7 @@ def modelUpdater(newModel,xTest,yTest):
         # Load and evaluate old model
         old_model = load_model(model_path)
         y_pred_old = old_model.predict(xTest)
-        print("ℹ️Generated predictions using new model")
+        print("ℹ️Generated predictions using old model")
         old_score_mse = mean_squared_error(yTest, y_pred_old)
         old_score_r2 = r2_score(yTest, y_pred_old)
 
