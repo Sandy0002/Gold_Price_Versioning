@@ -30,6 +30,11 @@ jobs:
 
       # Step 4: Run unit tests
       - name: Run pytest (unit tests)
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           echo "🚀 Running unit tests..."
           pytest Tests/unit/test_train_model.py -v --disable-warnings --maxfail=3
