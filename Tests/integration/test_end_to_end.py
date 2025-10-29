@@ -35,7 +35,7 @@ def test_full_pipeline_end_to_end(monkeypatch, tmp_path):
 
     # Monkeypatch model saving path so it writes to tmp_path instead of real /models
     # simulates: project_root = Path(__file__).resolve().parents[1]
-    monkeypatch.setattr(tr.Path, "resolve", lambda self: tmp_path)
+    monkeypatch.setattr(tr, "Path", lambda *a, **kw: Path(tmp_path))
 
     # 2️⃣ Prepare data (sequence creation + scaling)
     X_train, X_test, y_train, y_test, scaler = sc.prepare_data()
