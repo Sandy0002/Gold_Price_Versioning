@@ -36,7 +36,8 @@ def test_full_pipeline_end_to_end(monkeypatch, tmp_path):
     # Monkeypatch model saving path so it writes to tmp_path instead of real /models
     # simulates: project_root = Path(__file__).resolve().parents[1]
     # monkeypatch.setattr(tr, "Path", lambda *a, **kw: Path(tmp_path))
-    monkeypatch.setattr(tr, "Path", lambda *a, **k: tmp_path / "src")
+    monkeypatch.setattr(tr.Path, "resolve", lambda self: tmp_path)
+
 
     # 2️⃣ Prepare data (sequence creation + scaling)
     X_train, X_test, y_train, y_test, scaler = sc.prepare_data()
@@ -57,8 +58,9 @@ def test_full_pipeline_end_to_end(monkeypatch, tmp_path):
     tr.modelUpdater(model, X_test, y_test)
 
     # 5️⃣ Ensure model was saved
-    model_path = tmp_path / "models" / "gold_lstm_model.h5"
-    assert model_path.exists() or True # skip actual save check
+    project_root = Path(__file__).resolve().parents[2]
+    model_path = project_root / "models" / "gold_lstm_model.h5"
+    assert model_path.exists(), f"Model not found at {model_path}"
 
     # 6️⃣ Load and evaluate
     reloaded = tf.keras.models.load_model(model_path)
