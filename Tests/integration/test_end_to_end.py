@@ -30,15 +30,17 @@ def test_full_pipeline_end_to_end(monkeypatch, tmp_path):
     # Monkeypatch DB fetch
     monkeypatch.setattr(sc, "fetch_data_postgres", mock_fetch_data_postgres)
     
+    # Monkeypatch model saving path so it writes to tmp_path instead of real /models
+    # simulates: project_root = Path(__file__).resolve().parents[1]
+    # monkeypatch.setattr(tr, "Path", lambda *a, **kw: Path(tmp_path))
+    monkeypatch.setattr(tr, "Path", lambda *a, **k: tmp_path / "src")
+    
     def mock_project_root():
     # Force all saves to go under tmp_path/models
     # if this is not there then the below line of monkeypatch.setattr for referncing parent path will refer to a non-existent path which will throw assertion error that model should be saved after training
       return tmp_path
 
-    # Monkeypatch model saving path so it writes to tmp_path instead of real /models
-    # simulates: project_root = Path(__file__).resolve().parents[1]
-    # monkeypatch.setattr(tr, "Path", lambda *a, **kw: Path(tmp_path))
-    monkeypatch.setattr(tr, "Path", lambda *a, **k: tmp_path / "src")
+    
 
     # 2️⃣ Prepare data (sequence creation + scaling)
     X_train, X_test, y_train, y_test, scaler = sc.prepare_data()
