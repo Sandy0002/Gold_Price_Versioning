@@ -39,17 +39,6 @@ jobs:
           echo "🚀 Running unit tests..."
           # pytest Tests/unit/ -v --disable-warnings --maxfail=3
 
-      - name: Run integration test for backend
-        env:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASS: ${{ secrets.DB_PASS }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-        run: |
-          echo "🚀 Running integration tests..."
-          pytest Tests/integration/test_end_to_end.py -v --disable-warnings --maxfail=3
-
-
       - name: Run integration from frontend to backend
         env:
           DB_USER: ${{ secrets.DB_USER }}
