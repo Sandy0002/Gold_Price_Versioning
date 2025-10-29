@@ -1,3 +1,5 @@
+# This code is integration test for entire backend
+
 import numpy as np
 import pytest
 from pathlib import Path

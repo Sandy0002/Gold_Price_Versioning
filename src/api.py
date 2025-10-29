@@ -10,8 +10,7 @@ from sklearn.preprocessing import MinMaxScaler
 # ===============================
 # 1. Initialize FastAPI app
 # ===============================
-# router = APIRouter(prefix="/gold", tags=["Gold Price Forecasting"])
-router = APIRouter(prefix="/gold", tags=["Gold Price Forecasting"])
+
 app = FastAPI(title="Gold Price Forecasting API")
 
 # app = FastAPI()  # <-- Define app here

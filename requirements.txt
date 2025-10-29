@@ -10,3 +10,4 @@ tensorflow-cpu==2.15.0
 fastapi
 uvicorn
 pytest
+httpx

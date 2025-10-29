@@ -1,5 +1,1 @@
-{
-    "name": "gold_lstm_model",
-    "trained_at": "2025-10-27 05:25:02.722919",
-    "r2_score": 0.98
-}
+{"model_name": "dummy_gold_lstm", "trained_on": "synthetic_data", "lookback": 60}
