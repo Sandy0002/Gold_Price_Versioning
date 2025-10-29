@@ -73,7 +73,7 @@ def test_full_pipeline_end_to_end(monkeypatch, tmp_path):
     assert model_path.exists()# skip actual save check
 
     # 6️⃣ Load and evaluate
-    reloaded = tf.keras.models.load_model(model_path)
+    reloaded = tf.keras.models.load_model(model_path,compile=False)
     preds = reloaded.predict(X_test)
     assert preds.shape[0] == X_test.shape[0], "Predictions shape mismatch"
 
