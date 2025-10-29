@@ -48,9 +48,9 @@ def test_full_pipeline_end_to_end(monkeypatch, tmp_path):
 
     # 3️⃣ Train lightweight model (using fewer epochs for speed)
     model = tf.keras.Sequential([
-        tf.keras.layers.Input(shape=(X_train.shape[1], 1)),
-        tf.keras.layers.LSTM(5, return_sequences=False),
-        tf.keras.layers.Dense(1)
+    tf.keras.layers.InputLayer(input_shape=(X_train.shape[1], 1)),
+    tf.keras.layers.LSTM(5, return_sequences=False),
+    tf.keras.layers.Dense(1)
     ])
     model.compile(optimizer="adam", loss="mse")
     model.fit(X_train, y_train, epochs=1, batch_size=16, verbose=0)
