@@ -57,9 +57,10 @@ def test_full_pipeline_end_to_end(monkeypatch, tmp_path):
 
     # 4️⃣ Save model and run modelUpdater logic
     tr.modelUpdater(model, X_test, y_test)
+    import src.train_model as tr 
 
     # 5️⃣ Ensure model was saved
-    project_root = Path(__file__).resolve().parents[2]
+    project_root = Path(tr.__file__).resolve().parents[1]
 
     # for above line if you get:
     '''Tests/integration/test_end_to_end.py::test_full_pipeline_end_to_end - AssertionError: Model not found at /tmp/models/gold_lstm_model.h5 assert False + where False = exists() + where exists = PosixPath('/tmp/models/gold_lstm_model.h5').exists
