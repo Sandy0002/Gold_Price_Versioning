@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
-from pathlib import Path
 import src.train_model as tr
+from pathlib import Path
 
 # ---------------------------------------------------------------------------
 # MOCKS
