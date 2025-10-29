@@ -32,4 +32,4 @@ jobs:
       - name: Run pytest (unit tests)
         run: |
           echo "🚀 Running unit tests..."
-          pytest tests\unit\test_train_model.py -v --disable-warnings --maxfail=3
+          pytest tests/unit/test_train_model.py -v --disable-warnings --maxfail=3
