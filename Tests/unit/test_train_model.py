@@ -94,14 +94,9 @@ def test_training_runs_with_mocked_dependencies():
 
 
 @pytest.mark.unit
-def test_model_updater_compares_models():
+def test_model_updater_compares_models(mock_model):
     """Ensure modelUpdater handles comparison branch without error."""
-#     class FakeModel:
-#         def predict(self, X): return np.random.rand(X.shape[0], 1)
-#         def save(self, *args, **kwargs): pass
-#     monkeypatch.setattr(tr, "load_model", lambda path: FakeModel())
-
-    new_model = mock_model() # Uses dummy model class
+    new_model = mock_model # Uses dummy model class
     x_test = np.random.rand(10, 60, 1)
     y_test = np.random.rand(10)
     tr.modelUpdater(new_model, x_test, y_test)
