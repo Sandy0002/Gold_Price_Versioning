@@ -37,7 +37,7 @@ class InputData(BaseModel):
 # Load model at startup
 project_root = Path(__file__).resolve().parents[1]
 models_dir =project_root / "models"
-model = models_dir /"gold_lstm_model.h5"
+model = models_dir /"gold_lstm_model.keras"
 metadata = models_dir / "model_metadata.json"
 scaler = MinMaxScaler()
 
