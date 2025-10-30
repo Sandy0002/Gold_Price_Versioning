@@ -44,7 +44,7 @@ def modelUpdater(newModel,xTest,yTest):
             if new_score_r2 > old_score_r2:  # Lower MSE = better model
                 logger.info("New model is better. Saving it.")
                 # newModel.save(model_path, save_format="h5")
-                newModel.save(model_path, save_format="keras")
+                newModel.save(model_path)
 
             else:
                 logger.info("New model is worse. Keeping old one.")
