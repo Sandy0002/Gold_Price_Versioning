@@ -20,7 +20,6 @@ def modelUpdater(newModel,xTest,yTest):
         # Create models directory under project root
         models_dir = project_root / "models"
         models_dir.mkdir(exist_ok=True)
-        # model_path = models_dir / "gold_lstm_model.h5"
         model_path = models_dir / "gold_lstm_model.keras"
 
         # Evaluate new model

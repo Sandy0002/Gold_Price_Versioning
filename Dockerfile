@@ -1,22 +1,32 @@
 FROM python:3.11-slim
 
-# Set working directory
+# ---------- Environment Variables ----------
+ENV PYTHONUNBUFFERED=1 \
+    APP_ENV=docker \
+    LOG_LEVEL=INFO \
+    PORT=8000
+
+# ---------- Set Working Directory ----------
 WORKDIR /app
 
-# Copy project files
-COPY . /app
-
-# Install dependencies
+# ---------- Copy Dependency File and Install ----------
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 
-# Copy the rest of the code
+# ---------- Copy Only Necessary Folders ----------
 COPY ./src ./src
 COPY ./models ./models
+COPY ./src_logger ./src_logger
 
-# Expose port 8000 (Render expects a web service)
+# ---------- (Optional) Copy .env if needed ----------
+# COPY .env ./
+
+# ---------- Create Logs Directory ----------
+RUN mkdir -p /app/logs  && chmod -R 777 /app/logs
+
+# ---------- Expose Port ----------
 EXPOSE 8000
 
-# Start the FastAPI server
-CMD uvicorn src.api:app --host 0.0.0.0 --port $PORT
+# ---------- Run Application ----------
+CMD ["uvicorn", "src_logger.api:app", "--host", "0.0.0.0", "--port", "8000"]

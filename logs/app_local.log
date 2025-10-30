@@ -26,3 +26,18 @@
 2025-10-29 22:00:33,132 | DEBUG | h5py._conv | __getitem__:77 - Creating converter from 3 to 5
 2025-10-29 22:02:31,259 | INFO | gold_forecasting_api | setup_logger:47 - Logger initialized for environment: local
 2025-10-29 22:02:31,262 | DEBUG | h5py._conv | __getitem__:77 - Creating converter from 3 to 5
+2025-10-30 15:54:39,919 | INFO | gold_forecasting_api | setup_logger:55 - Logger initialized for environment: local | Level: INFO
+2025-10-30 15:54:40,292 | INFO | src_logger.api | <module>:51 - ✅ Model and metadata loaded successfully.
+2025-10-30 16:12:42,278 | INFO | gold_forecasting_api | setup_logger:55 - Logger initialized for environment: local | Level: INFO
+2025-10-30 16:12:42,662 | INFO | src_logger.api | <module>:51 - ✅ Model and metadata loaded successfully.
+2025-10-30 16:13:55,569 | INFO | gold_forecasting_api | setup_logger:55 - Logger initialized for environment: local | Level: INFO
+2025-10-30 16:13:55,758 | INFO | src_logger.api | <module>:51 - ✅ Model and metadata loaded successfully.
+2025-10-30 16:16:46,067 | INFO | gold_forecasting_api | setup_logger:55 - Logger initialized for environment: local | Level: INFO
+2025-10-30 16:16:46,069 | INFO | src_logger.api | <module>:21 - FastAPI app initialized
+2025-10-30 16:16:46,650 | INFO | src_logger.api | <module>:52 - ✅ Model and metadata loaded successfully.
+2025-10-30 16:18:25,518 | INFO | gold_forecasting_api | setup_logger:57 - Logger initialized for environment: local | Level: INFO
+2025-10-30 16:18:25,520 | INFO | src_logger.api | <module>:21 - FastAPI app initialized
+2025-10-30 16:18:25,799 | INFO | src_logger.api | <module>:52 - ✅ Model and metadata loaded successfully.
+2025-10-30 16:18:33,464 | INFO | gold_forecasting_api | setup_logger:57 - Logger initialized for environment: local | Level: INFO
+2025-10-30 16:18:33,465 | INFO | src_logger.api | <module>:21 - FastAPI app initialized
+2025-10-30 16:18:33,676 | INFO | src_logger.api | <module>:52 - ✅ Model and metadata loaded successfully.

@@ -1,3 +1,9 @@
+from src_logger.logging_config import setup_logger
+
+# Initialize logger early
+setup_logger()
+
+
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 from tensorflow.keras.models import load_model
@@ -8,16 +14,14 @@ import os
 from pathlib import Path
 import time
 import sys
-from src_logger.logging_config import setup_logger
 from src_logger.logger import get_logger  # ✅ import your centralized logger
 from fastapi.responses import JSONResponse
 import traceback
 
 
-# Initialize logger early
-setup_logger()
 logger = get_logger(__name__)
 
+logger.info("FastAPI app initialized")
 
 
 # ===============================
@@ -40,7 +44,7 @@ class InputData(BaseModel):
 
 project_root = Path(__file__).resolve().parents[1]
 models_dir = project_root / "models"
-model_path = models_dir / "gold_lstm_model.h5"
+model_path = models_dir / "gold_lstm_model.keras"
 metadata_path = models_dir / "model_metadata.json"
 scaler = MinMaxScaler()
 
