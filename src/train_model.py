@@ -14,7 +14,8 @@ def modelUpdater(newModel,xTest,yTest):
     # Create models directory under project root
     models_dir = project_root / "models"
     models_dir.mkdir(exist_ok=True)
-    model_path = models_dir / "gold_lstm_model.h5"
+    # model_path = models_dir / "gold_lstm_model.h5"
+    model_path = models_dir / "gold_lstm_model.keras"
 
     # Evaluate new model
     y_pred_new = newModel.predict(xTest)
@@ -36,7 +37,7 @@ def modelUpdater(newModel,xTest,yTest):
         # Compare and decide
         if new_score_r2 > old_score_r2:  # Lower MSE = better model
             print("✅ New model is better. Saving it.")
-            newModel.save(model_path, save_format="h5")
+            newModel.save(model_path)
 
         else:
             print("⚠️ New model is worse. Keeping old one.")

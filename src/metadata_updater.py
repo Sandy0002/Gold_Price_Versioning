@@ -6,7 +6,8 @@ import datetime
 project_root = Path(__file__).resolve().parents[1]
 models_dir = project_root / "models"
 models_dir.mkdir(exist_ok=True)
-model_file = models_dir / "gold_lstm_model.h5"
+# model_file = models_dir / "gold_lstm_model.h5"
+model_file = models_dir / "gold_lstm_model.keras"
 metadata_file = models_dir / "model_metadata.json"
 
 # Example new model info
