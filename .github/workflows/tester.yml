@@ -3,10 +3,11 @@ name: 🧪 Run Tests
 on:
   schedule:
     - cron: "00 15 * * *" 
-  # push:
-  #   branches: [ main]
-  # pull_request:
-  #   branches: [ main]
+    
+  push:
+    branches: [ main]
+  pull_request:
+    branches: [ main]
 
 jobs:
   test:
