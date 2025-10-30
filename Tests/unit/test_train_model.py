@@ -79,7 +79,7 @@ def test_model_updater_saves_when_no_existing_model(tmp_path, mock_model):
     tr.modelUpdater(model, x_test, y_test)
 
     # Assert "gold_lstm_model.h5" got (pretend) saved
-    expected_path = tmp_path / "models" / "gold_lstm_model.h5"
+    expected_path = tmp_path / "models" / "gold_lstm_model.keras"
     assert expected_path.exists() or True  # skip actual save check
 
 
