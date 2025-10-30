@@ -52,8 +52,8 @@ def test_full_pipeline_end_to_end(monkeypatch, tmp_path):
     tr.modelUpdater(model, X_test, y_test)
 
     # 6️⃣ Resolve possible model save locations
-    tmp_model_path = tmp_path / "models" / "gold_lstm_model.h5"
-    real_model_path = Path(tr.__file__).resolve().parents[1] / "models" / "gold_lstm_model.h5"
+    tmp_model_path = tmp_path / "models" / "gold_lstm_model.keras"
+    real_model_path = Path(tr.__file__).resolve().parents[1] / "models" / "gold_lstm_model.keras"
 
     if tmp_model_path.exists():
         model_path = tmp_model_path
