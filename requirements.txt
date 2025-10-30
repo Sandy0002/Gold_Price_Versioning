@@ -7,7 +7,7 @@ sqlalchemy
 pathlib
 psycopg2-binary
 # tensorflow-cpu==2.15.0
-tensorflow==2.16.0
+tensorflow==2.16.1
 fastapi
 uvicorn
 pytest
