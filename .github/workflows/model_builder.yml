@@ -4,8 +4,8 @@ on:
   schedule:
     - cron: "45 14 * * *"   # ✅ Runs every day at 20:15 IST after data_fetcher
     
-  # push:
-  #   branches: [ main ]
+  push:
+    branches: [ main ]
   # pull_request:
   #   branches: [ main ]
 
@@ -86,8 +86,8 @@ jobs:
           git pull origin main
 
           # Stage files if they exist
-          # git add models/gold_lstm_model.h5
-          git add models/gold_lstm_model.keras
+          git add models/gold_lstm_model.h5
+          # git add models/gold_lstm_model.keras
 
           git commit -m "Saved model automatically" || echo "No changes to commit"
           git push origin main
