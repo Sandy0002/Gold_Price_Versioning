@@ -1,5 +1,5 @@
 ## About this project
-In this we are adding monitoring,logging,health check and tests for our setup
+In this we will extend gold price monitoring setup to apply concept of IAC and model versioning
 
 ### People looking to interact can use below link
 **Note:** It takes 60 values in a list format to give prediction.<br>
