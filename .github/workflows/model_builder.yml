@@ -4,10 +4,10 @@ on:
   schedule:
     - cron: "45 14 * * *"   # ✅ Runs every day at 20:15 IST after data_fetcher
     
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
 
 
 permissions:
