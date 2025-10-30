@@ -16,7 +16,8 @@ try:
       # Importing model
       project_root = Path(__file__).resolve().parents[1]
       models_dir = project_root / "models"
-      model_path = models_dir / "gold_lstm_model.h5"
+      # model_path = models_dir / "gold_lstm_model.h5"
+      model_path = models_dir / "gold_lstm_model.keras"
       model = load_model(model_path)
 
       predictions = model.predict(xTest)
