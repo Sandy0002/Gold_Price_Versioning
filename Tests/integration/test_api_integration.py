@@ -32,7 +32,7 @@ def setup_dummy_model(tmp_path_factory):
         Dense(1)
     ])
     model.compile(optimizer="adam", loss="mse")
-    dummy_model_path = models_dir / "gold_lstm_model.h5"
+    dummy_model_path = models_dir / "gold_lstm_model.keras"
     model.save(dummy_model_path)
 
     # Create dummy metadata
@@ -76,7 +76,7 @@ def test_predict_endpoint_with_valid_input(client,monkeypatch,tmp_path):
     models_dir = tmp_path / "models"
     models_dir.mkdir(exist_ok=True)
 
-    dummy_model_path = models_dir / "gold_lstm_model.h5"
+    dummy_model_path = models_dir / "gold_lstm_model.keras"
     dummy_metadata_path = models_dir / "model_metadata.json"
 
     # Create and save a small LSTM model
@@ -125,7 +125,7 @@ def test_predict_endpoint_invalid_input(client,monkeypatch,tmp_path):
     models_dir = tmp_path / "models"
     models_dir.mkdir(exist_ok=True)
 
-    dummy_model_path = models_dir / "gold_lstm_model.h5"
+    dummy_model_path = models_dir / "gold_lstm_model.keras"
     dummy_metadata_path = models_dir / "model_metadata.json"
 
     # Create and save a small LSTM model
