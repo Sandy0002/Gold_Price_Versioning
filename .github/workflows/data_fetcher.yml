@@ -70,11 +70,15 @@ jobs:
           EOF
 
             # 6️⃣ Run data fetch & update script
-
       - name: Get current date
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
+          
+      - name: Debug file paths
+        run: |
+              pwd
+              ls -l data/raw/
       - name: Run data fetch & update
         env:
           DB_USER: ${{ secrets.DB_USER }}
@@ -83,7 +87,10 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           python src/data_preprocess.py 
-      
+
+      - name: List after Python
+        run: ls -l data/raw/
+
       - name: Track new snapshot with DVC
         run: |
           mkdir -p data/raw  # ✅ Ensure folder exists
