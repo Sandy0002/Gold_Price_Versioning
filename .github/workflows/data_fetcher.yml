@@ -100,6 +100,6 @@ jobs:
       
       - name: "Adding files to dvc for tracking"
         run:  |
-          dvc add data/raw/train_snapshot_${{ steps.date.outputs.date }}.csv
-          git add data/raw/train_snapshot_${{ steps.date.outputs.date }}.csv.dvc .gitignore
+          dvc add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv
+          git add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv.dvc .gitignore
           dvc push
