@@ -123,11 +123,8 @@ if __name__ == "__main__":
     df_retrieved = fetch_data_postgres()
     print(f"📊 Retrieved {len(df_retrieved)} rows")
 
-    if not data_file_path.exists():
-        df_retrieved.to_csv(data_file_path, index=False)
-        print(f"✅ File created successfully with name {data_file_path}")
-    else:
-        print(f"⚠️ File already exists at {data_file_path}, skipping creation.")
-        sys.exit(1)  # optional: fail CI if you never want to skip creation
+    df_retrieved.to_csv(data_file_path, index=False)
+    print(f"✅ File created successfully with name {data_file_path}")
+
 
     print(df_retrieved.tail())
