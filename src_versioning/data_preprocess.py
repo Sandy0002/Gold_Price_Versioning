@@ -107,7 +107,7 @@ def fetch_data_postgres(table_name="gold_prices",engine=None):
 if __name__ == "__main__":
     # --- Configuration of file paths---
     project_root = Path(__file__).resolve().parents[1]
-    today = datetime.now().strftime("%Y_%m_%d")
+    today = datetime.date.today()
 
     data_dir = project_root / "data/raw"
     data_dir.mkdir(exist_ok=True)
