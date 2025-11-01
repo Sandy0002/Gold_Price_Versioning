@@ -105,23 +105,29 @@ def fetch_data_postgres(table_name="gold_prices",engine=None):
 
 # ---------- MAIN PIPELINE ----------
 if __name__ == "__main__":
-    # --- Configuration of file paths---
     project_root = Path(__file__).resolve().parents[1]
-    today = datetime.date.today()
-
+    today = date.today()
     data_dir = project_root / "data/raw"
-    data_dir.mkdir(exist_ok=True)
-    data_file_path = data_dir / f"gold_snapshot_{today}.csv"   
+    data_dir.mkdir(parents=True, exist_ok=True)
+
+    data_file_path = data_dir / f"gold_snapshot_{today}.csv"
+
+    print(f"🧭 Project root: {project_root}")
+    print(f"📂 Saving to: {data_file_path.resolve()}")
+    print(f"File exists before saving? {data_file_path.exists()}")
 
     new_data = fetch_gold_data()
-    if len(new_data) >0:
+    if len(new_data) > 0:
         store_data_postgres(new_data)
-    df_retrieved = fetch_data_postgres()
 
-    # --- Save or update csv file ---
+    df_retrieved = fetch_data_postgres()
+    print(f"📊 Retrieved {len(df_retrieved)} rows")
+
     if not data_file_path.exists():
         df_retrieved.to_csv(data_file_path, index=False)
         print(f"✅ File created successfully with name {data_file_path}")
     else:
-        print("File already exists exiting creation")
+        print(f"⚠️ File already exists at {data_file_path}, skipping creation.")
+        sys.exit(1)  # optional: fail CI if you never want to skip creation
+
     print(df_retrieved.tail())

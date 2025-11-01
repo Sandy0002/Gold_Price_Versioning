@@ -99,7 +99,7 @@ jobs:
           git checkout main
           git pull origin main
 
-          git add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv
+          # git add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv
 
           git commit -m "Saved latest data version" || echo "No changes to commit"
           git push origin main
