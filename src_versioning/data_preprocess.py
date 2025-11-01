@@ -107,9 +107,20 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=str, required=True)
     args = parser.parse_args()
 
+    print("🔄 Fetching new gold data...")
     new_data = fetch_gold_data()
-    if len(new_data) >0:
+
+    if new_data is not None and len(new_data) > 0:
+        print("💾 New data found — updating database...")
         store_data_postgres(new_data)
+    else:
+        print("⚠️ No new data found. Skipping DB update.")
+
+    print("📤 Retrieving data from Postgres...")
     df_retrieved = fetch_data_postgres()
+
+    # Ensure directory exists (important in CI/CD)
+    os.makedirs(os.path.dirname(args.output), exist_ok=True)
+
     df_retrieved.to_csv(args.output, index=False)
-    print(f"✅ Data exported to {args.output}")
+    print(f"✅ Data exported successfully to {args.output}")
