@@ -4,11 +4,11 @@ on:
   schedule:
     - cron: "40 14 * * *"   # Optional: Runs daily at 20:10 IST
     
-  # push:
-  #   branches: [ main ]
-  # pull_request:
-  #   branches: [ main ]
-  # workflow_dispatch:  # allows manual trigger from GitHub UI
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # allows manual trigger from GitHub UI
 
 permissions:
   contents: write
@@ -69,7 +69,12 @@ jobs:
               print("❌ PostgreSQL connection failed:", e)
           EOF
 
-      # 6️⃣ Run data fetch & update script
+            # 6️⃣ Run data fetch & update script
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y_%m_%d')" >> $GITHUB_OUTPUT
+
       - name: Run data fetch & update
         env:
           DB_USER: ${{ secrets.DB_USER }}
@@ -77,4 +82,25 @@ jobs:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-          python src/data_preprocess.py
+          mkdir -p data/raw
+          python src/data_preprocess.py --output data/raw/train_snapshot_${{ steps.date.outputs.date }}.csv
+
+      - name: Commit updated data snapshot
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          git fetch --prune --unshallow || echo "Already full clone"
+          git checkout main
+          git pull origin main
+
+          git add data/raw/train_snapshot_${{ steps.date.outputs.date }}.csv
+
+          git diff --cached --quiet || git commit -m "Saved data snapshot ${{ steps.date.outputs.date }}"
+          git push origin main
+      
+      - name: "Adding files to dvc for tracking"
+        run:  |
+          dvc add data/raw/train_snapshot_${{ steps.date.outputs.date }}.csv
+          git add data/raw/train_snapshot_${{ steps.date.outputs.date }}.csv.dvc .gitignore
+          dvc push
