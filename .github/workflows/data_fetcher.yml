@@ -84,22 +84,22 @@ jobs:
         run: |
           python src/data_preprocess.py 
 
+      - name: Track new snapshot with DVC
+        run: |
+          dvc add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv
+          git add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv.dvc .gitignore
+
       - name: Commit updated data snapshot
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
-          git fetch --prune --unshallow || echo "Already full clone"
-          git checkout main
-          git pull origin main
+            git fetch --prune --unshallow || echo "Already full clone"
+            git checkout main
+            git pull origin main
 
-          git add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv
+            git diff --cached --quiet || git commit -m "DVC tracked data snapshot ${{ steps.date.outputs.date }}"
+            git push origin main
 
-          git commit -m "Saved latest data version" || echo "No changes to commit"
-          git push origin main
-      
-      - name: "Adding files to dvc for tracking"
-        run:  |
-          dvc add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv
-          git add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv.dvc .gitignore
-          dvc push
+      - name: Push data to DVC remote
+        run: dvc push
