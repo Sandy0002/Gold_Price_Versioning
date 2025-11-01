@@ -96,7 +96,7 @@ jobs:
 
           git add data/raw/train_snapshot_${{ steps.date.outputs.date }}.csv
 
-          git diff --cached --quiet || git commit -m "Saved data snapshot ${{ steps.date.outputs.date }}"
+          git commit -m "Saved latest data version" || echo "No changes to commit"
           git push origin main
       
       - name: "Adding files to dvc for tracking"
