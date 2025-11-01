@@ -119,8 +119,9 @@ if __name__ == "__main__":
     df_retrieved = fetch_data_postgres()
 
     # --- Save or update csv file ---
-    if not os.path.exists(data_file_path):
+    if not data_file_path.exists():
         df_retrieved.to_csv(data_file_path, index=False)
         print(f"✅ File created successfully with name {data_file_path}")
-    
+    else:
+        print("File already exists exiting creation")
     print(df_retrieved.tail())
