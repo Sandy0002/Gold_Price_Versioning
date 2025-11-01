@@ -109,10 +109,10 @@ if __name__ == "__main__":
     project_root = Path(__file__).resolve().parents[1]
     today = datetime.now().strftime("%Y_%m_%d")
 
-    # Getting run time parser
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--output", type=str, required=True)
-    args = parser.parse_args()
+    # # Getting run time parser
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("--output", type=str, required=True)
+    # args = parser.parse_args()
 
     data_dir = project_root / "data/raw"
     data_dir.mkdir(exist_ok=True)

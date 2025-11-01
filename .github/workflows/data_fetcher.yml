@@ -82,8 +82,7 @@ jobs:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-          mkdir -p data/raw
-          python src/data_preprocess.py --output data/raw/train_snapshot_${{ steps.date.outputs.date }}.csv
+          python src/data_preprocess.py 
 
       - name: Commit updated data snapshot
         run: |
@@ -94,7 +93,7 @@ jobs:
           git checkout main
           git pull origin main
 
-          git add data/raw/train_snapshot_${{ steps.date.outputs.date }}.csv
+          git add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv
 
           git commit -m "Saved latest data version" || echo "No changes to commit"
           git push origin main
