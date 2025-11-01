@@ -5,6 +5,8 @@ from sqlalchemy import create_engine, inspect
 import os
 from dotenv import load_dotenv
 import argparse
+import datetime
+from pathlib import Path
 
 load_dotenv()
 
@@ -103,24 +105,26 @@ def fetch_data_postgres(table_name="gold_prices",engine=None):
 
 # ---------- MAIN PIPELINE ----------
 if __name__ == "__main__":
+    # --- Configuration of file paths---
+    project_root = Path(__file__).resolve().parents[1]
+    today = datetime.now().strftime("%Y_%m_%d")
+
+    # Getting run time parser
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=str, required=True)
     args = parser.parse_args()
 
-    print("🔄 Fetching new gold data...")
+    data_dir = project_root / "data/raw"
+    data_dir.mkdir(exist_ok=True)
+    data_file_path = data_dir / "gold_snapshot_{today}.csv"   
+
     new_data = fetch_gold_data()
-
-    if new_data is not None and len(new_data) > 0:
-        print("💾 New data found — updating database...")
+    if len(new_data) >0:
         store_data_postgres(new_data)
-    else:
-        print("⚠️ No new data found. Skipping DB update.")
-
-    print("📤 Retrieving data from Postgres...")
     df_retrieved = fetch_data_postgres()
+    print(df_retrieved.tail())
 
-    # Ensure directory exists (important in CI/CD)
-    os.makedirs(os.path.dirname(args.output), exist_ok=True)
-
-    df_retrieved.to_csv(args.output, index=False)
-    print(f"✅ Data exported successfully to {args.output}")
+    # --- Save or update csv file ---
+    if not os.path.exists(data_file_path):
+        df_retrieved.to_csv(data_file_path, index=False)
+        print("✅ File created successfully.")
