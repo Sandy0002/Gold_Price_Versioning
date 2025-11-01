@@ -117,9 +117,10 @@ if __name__ == "__main__":
     if len(new_data) >0:
         store_data_postgres(new_data)
     df_retrieved = fetch_data_postgres()
-    print(df_retrieved.tail())
 
     # --- Save or update csv file ---
     if not os.path.exists(data_file_path):
         df_retrieved.to_csv(data_file_path, index=False)
-        print("✅ File created successfully.")
+        print(f"✅ File created successfully with name {data_file_path}")
+    
+    print(df_retrieved.tail())

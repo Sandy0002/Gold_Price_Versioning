@@ -73,7 +73,7 @@ jobs:
 
       - name: Get current date
         id: date
-        run: echo "date=$(date +'%Y_%m_%d')" >> $GITHUB_OUTPUT
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       - name: Run data fetch & update
         env:
