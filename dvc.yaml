@@ -20,4 +20,4 @@ stages:
       - src_versioning/metadata_updater.py
       - models/gold_lstm_model.keras
     outs:
-      - metadata/metadata.json
+      - models/model_metadata.json
