@@ -1,9 +1,9 @@
 name: Data + Model Pipeline
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "45 14 * * *"   # Optional: Runs daily at 20:15 IST
+  # workflow_dispatch:
+  # schedule:
+  #   - cron: "45 14 * * *"   # Optional: Runs daily at 20:15 IST
 
   push:
     branches: [ main ]
