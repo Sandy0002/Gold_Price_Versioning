@@ -1,0 +1,63 @@
+name: Data + Model Pipeline
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "45 14 * * *"   # Optional: Runs daily at 20:15 IST
+
+jobs:
+  run_pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Run data preprocessing and save snapshot
+        run: |
+            # the below command is to generate files with dates
+            # python src_versioning/data_preprocess.py --output "data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv"
+
+            python src_versioning/data_preprocess.py --output "data/raw/gold_snapshot_latest.csv"
+
+      - name: Track new snapshot with DVC
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          git fetch --prune --unshallow || echo "Already full clone"
+          git checkout main
+          git pull origin main
+
+          dvc add data/raw/gold_snapshot_latest.csv
+          git add data/raw/gold_snapshot_latest.csv.dvc .gitignore
+          git commit -m "📦 Add latest data snapshot" || echo "No changes to commit"
+          git push origin main
+
+      - name: Run DVC pipeline (data + model)
+        run: dvc repro
+
+      - name: Commit and push model
+        run: |
+          git add models/*.dvc dvc.yaml dvc.lock .gitignore || echo "No model artifacts found"
+          git commit -m "🏋️‍♂️ Retrained model on data ${{ steps.date.outputs.date }}" || echo "No model changes"
+          git push origin main
+
+      # Optional: add remote storage later
+      # - name: Push DVC data to remote
+      #   run: dvc push

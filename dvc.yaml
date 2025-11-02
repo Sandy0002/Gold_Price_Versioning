@@ -1,0 +1,16 @@
+stages:
+  fetch_data:
+    cmd: python src_versioning/data_preprocess.py
+    deps:
+      - src_versioning/data_preprocess.py
+    outs:
+      - data/raw/gold_snapshot_latest.csv
+
+   train_model:
+    cmd: python src_versioning/train_model.py --input data/raw/gold_snapshot_latest.csv --output models/gold_lstm_model.keras
+    deps:
+      - src_versioning/train_model.py
+      - data/raw/gold_snapshot_latest.csv
+    outs:
+      - path: models/gold_lstm_model.keras
+        persist: true

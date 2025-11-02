@@ -4,11 +4,11 @@ on:
   schedule:
     - cron: "40 14 * * *"   # Optional: Runs daily at 20:10 IST
     
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:  # allows manual trigger from GitHub UI
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+  # workflow_dispatch:  # allows manual trigger from GitHub UI
 
 permissions:
   contents: write

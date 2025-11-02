@@ -33,7 +33,6 @@ def prepare_data():
     # Scaling data
     scaler = MinMaxScaler(feature_range=(0, 1))
     scaled_data = scaler.fit_transform(data)
-    print(scaled_data)
     lookback = 60
 
     X, y = create_sequences(scaled_data, lookback)
