@@ -1,20 +1,28 @@
-# In this program we will be training data by taking inputs from sequence_creator.py 
+# In this program we will be training data by taking inputs from a preprocessed CSV
 
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import LSTM, Dense, Dropout
-from pathlib import Path
-from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.preprocessing import MinMaxScaler
+from pathlib import Path
 import argparse
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler
+import sys
 
 
+# ------------------ DATA LOADING ------------------ #
 def load_data(input_path):
-    df = pd.read_csv(input_path)
+    try:
+        df = pd.read_csv(input_path)
+        print(f"📥 Loaded data from {input_path} — shape: {df.shape}")
+        return df
+    except Exception as e:
+        print(f"❌ Error loading data: {e}")
+        return pd.DataFrame()  # return empty df if file missing
 
-# Create sequences (lookback = 60 days)
+
+# ------------------ SEQUENCE CREATION ------------------ #
 def create_sequences(data, lookback):
     X, y = [], []
     for i in range(lookback, len(data)):
@@ -23,107 +31,92 @@ def create_sequences(data, lookback):
     return np.array(X), np.array(y)
 
 
-def modelUpdater(newModel,xTest,yTest):
+# ------------------ MODEL UPDATER ------------------ #
+def modelUpdater(newModel, xTest, yTest):
     project_root = Path(__file__).resolve().parents[1]
-
-    # Create models directory under project root
     models_dir = project_root / "models"
     models_dir.mkdir(exist_ok=True)
-    # model_path = models_dir / "gold_lstm_model.h5"
     model_path = models_dir / "gold_lstm_model.keras"
 
-    # Evaluate new model
     y_pred_new = newModel.predict(xTest)
     new_score_mse = mean_squared_error(yTest, y_pred_new)
     new_score_r2 = r2_score(yTest, y_pred_new)
 
-    # Check if existing model exists
     if model_path.exists():
-        # Load and evaluate old model
         old_model = load_model(model_path)
         y_pred_old = old_model.predict(xTest)
-        print("ℹ️Generated predictions using old model")
+        print("ℹ️ Generated predictions using old model")
         old_score_mse = mean_squared_error(yTest, y_pred_old)
         old_score_r2 = r2_score(yTest, y_pred_old)
 
-        print(f"Old model MSE: {old_score_mse:.5f}")
-        print(f"New model MSE: {new_score_mse:.5f}")
+        print(f"Old model MSE: {old_score_mse:.5f}, R2: {old_score_r2:.5f}")
+        print(f"New model MSE: {new_score_mse:.5f}, R2: {new_score_r2:.5f}")
 
-        # Compare and decide
-        if new_score_r2 > old_score_r2:  # Lower MSE = better model
+        if new_score_r2 > old_score_r2:
             print("✅ New model is better. Saving it.")
             newModel.save(model_path)
-
         else:
             print("⚠️ New model is worse. Keeping old one.")
     else:
-        # No existing model → save the first one
         print("ℹ️ No existing model found. Saving new model.")
         newModel.save(model_path)
 
-def prepare_data(df):
 
+# ------------------ DATA PREPARATION ------------------ #
+def prepare_data(df):
     if df is None or df.empty:
-        print("⚠️ Empty dataframe received from DB")
-        return np.array([]), np.array([]), np.array([]), np.array([]), None
+        print("⚠️ Empty dataframe received — skipping training.")
+        return None, None, None, None, None
 
     data = df[["Close"]]
-
-    # Scaling data
     scaler = MinMaxScaler(feature_range=(0, 1))
     scaled_data = scaler.fit_transform(data)
     lookback = 60
 
     X, y = create_sequences(scaled_data, lookback)
+    X = np.reshape(X, (X.shape[0], X.shape[1], 1))
 
-    # That line reshapes X so it matches the 3D input format LSTMs expect: [samples, timesteps, features]
-    '''
-    X.shape[0] → number of samples  
-    X.shape[1] → number of timesteps (lookback window, e.g. 60)  
-    1 → number of features per timestep (e.g. just "Close" price)
-
-    So if your original X was shaped like (2000, 60) — meaning 2000 sequences, each with 60 values — the reshape makes it (2000, 60, 1) so the LSTM knows there’s 1 feature per time step.
-'''
-    X = np.reshape(X, (X.shape[0], X.shape[1], 1))  # [samples, timesteps, features]
-
-    # Train / test split
     split = int(len(X) * 0.7)
     X_train, X_test = X[:split], X[split:]
     y_train, y_test = y[:split], y[split:]
 
-    return X_train,X_test,y_train,y_test,scaler
+    return X_train, X_test, y_train, y_test, scaler
 
+
+# ------------------ TRAINING ------------------ #
 def training(data):
-    # Getting data from sequence_creator
-    xTrain,xTest,yTrain,yTest,scaler = prepare_data(data)
+    X_train, X_test, y_train, y_test, scaler = prepare_data(data)
+
+    if X_train is None or len(X_train) == 0:
+        print("⚠️ No training data available, skipping model training.")
+        sys.exit(0)
 
     model = Sequential([
-        # IN layer 1: 50 : Number of neurons, input_shape: timesteps,features, dropout is to remove some neurons randomly to avoid overfitting, return_sequence is for  outputs the entire sequence to the next LSTM layer (needed when stacking LSTMs).
-        LSTM(50, return_sequences=True, input_shape=(xTrain.shape[1], 1)), Dropout(0.2),
-        LSTM(50, return_sequences=False), Dropout(0.2),
-
-        # Fully connected layer with 25 neurons. ReLU helps capture non-linear relationships between past and future prices.
+        LSTM(50, return_sequences=True, input_shape=(X_train.shape[1], 1)),
+        Dropout(0.2),
+        LSTM(50, return_sequences=False),
+        Dropout(0.2),
         Dense(25, activation='relu'),
         Dense(1)
     ])
 
     model.compile(optimizer='adam', loss='mean_squared_error')
-    
-    # Fitting data
-    history = model.fit(xTrain, yTrain, epochs=20, batch_size=32, validation_data=(xTest, yTest), verbose=1)
-    
-    newModel = model
-    # Get project root (assuming current file is inside src/)
-    modelUpdater(newModel,xTest,yTest)
+    model.fit(X_train, y_train, epochs=20, batch_size=32, validation_data=(X_test, y_test), verbose=1)
 
-    return xTest,yTest,scaler
+    modelUpdater(model, X_test, y_test)
+    return model
 
-if __name__=='__main__':
+
+# ------------------ MAIN ------------------ #
+if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", type=str, required=True)
     parser.add_argument("--output", type=str, required=True)
     args = parser.parse_args()
 
-    data = load_data(args.input)
-    model = training(data)
-    model.save(args.output)
+    df = load_data(args.input)
+    trained_model = training(df)
+
+    # The model is already saved inside modelUpdater, but save output path too for DVC tracking
+    trained_model.save(args.output)
+    print(f"✅ Model saved to {args.output}")
