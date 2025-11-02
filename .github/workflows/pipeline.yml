@@ -90,7 +90,7 @@ jobs:
           git checkout main
           git pull origin main
 
-          git add dvc.yaml data/raw/gold_snapshot_latest.csv.dvc .gitignore
+          git add dvc.yaml data/raw/ .gitignore
           git commit -m "📦 Add latest data snapshot" || echo "No changes to commit"
           git push origin main
 
