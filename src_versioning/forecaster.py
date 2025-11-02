@@ -5,7 +5,8 @@ from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from src.train_model import training
 
-xTest,yTest,scaler = training()
+# xTest,yTest,scaler = training()
+model = load_model("models/lstm_gold_model.keras")
 
 # Importing model
 project_root = Path(__file__).resolve().parents[1]

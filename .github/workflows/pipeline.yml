@@ -108,5 +108,5 @@ jobs:
           git push origin main
 
       # Optional: add remote storage later
-      # - name: Push DVC data to remote
-      #   run: dvc push
+      - name: Push data & model
+        run: dvc push
