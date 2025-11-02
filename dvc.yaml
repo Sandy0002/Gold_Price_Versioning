@@ -13,4 +13,4 @@ stages:
       - data/raw/gold_snapshot_latest.csv
     outs:
       - path: models/gold_lstm_model.keras
-      - persist: true
+        persist: true
