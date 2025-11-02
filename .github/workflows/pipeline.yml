@@ -28,12 +28,53 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+      
+       # 4️⃣ Set environment variables (Postgres credentials)
+      - name: Set environment variables
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          echo "✅ Environment variables loaded"
+
+      # 5️⃣ Test PostgreSQL connection
+      - name: Test PostgreSQL connection
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          python - <<'EOF'
+          import os
+          import psycopg2
+
+          try:
+              conn = psycopg2.connect(
+                  host=os.getenv("DB_HOST"),
+                  user=os.getenv("DB_USER"),
+                  password=os.getenv("DB_PASS"),
+                  dbname=os.getenv("DB_NAME")
+              )
+              print("✅ PostgreSQL connection successful")
+              conn.close()
+          except Exception as e:
+              print("❌ PostgreSQL connection failed:", e)
+          EOF
+
 
       - name: Get current date
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       - name: Run data preprocessing and save snapshot
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
             # the below command is to generate files with dates
             # python src_versioning/data_preprocess.py --output "data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv"
