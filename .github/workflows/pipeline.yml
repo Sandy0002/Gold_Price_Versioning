@@ -90,9 +90,9 @@ jobs:
           git checkout main
           git pull origin main
 
-          dvc add data/raw/gold_snapshot_latest.csv
-          git add data/raw/gold_snapshot_latest.csv.dvc .gitignore
-          git commit -m "📦 Add latest data snapshot" || echo "No changes to commit"
+          # ✅ Just commit tracked outputs and pipeline metadata
+          git add dvc.yaml dvc.lock data/raw/.gitignore
+          git commit -m "📦 Add latest data snapshot via DVC pipeline" || echo "No changes to commit"
           git push origin main
 
       - name: Run DVC pipeline (data + model)
