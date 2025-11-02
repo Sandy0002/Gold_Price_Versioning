@@ -86,6 +86,16 @@ jobs:
 
       - name: Track new snapshot with DVC
         run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          # Ensure full history
+          git fetch --prune --unshallow || echo "Already full clone"
+
+          git checkout main
+          git pull origin main
+
+          
           dvc add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv
           git add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv.dvc .gitignore
           git commit -m "📦 Add data snapshot for ${{ steps.date.outputs.date }}" || echo "No changes to commit"

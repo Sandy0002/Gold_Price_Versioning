@@ -111,10 +111,6 @@ if __name__ == "__main__":
     data_dir.mkdir(parents=True,exist_ok=True)
     data_file_path = data_dir / f"gold_snapshot_{today}.csv"
 
-    # print(f"🧭 Project root: {project_root}")
-    # print(f"📂 Saving to: {data_file_path.resolve()}")
-
-
     new_data = fetch_gold_data()
     if len(new_data) > 0:
         store_data_postgres(new_data)
