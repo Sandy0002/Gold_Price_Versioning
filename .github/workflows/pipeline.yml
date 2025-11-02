@@ -97,14 +97,14 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
-          # Ensure full history
           git fetch --prune --unshallow || echo "Already full clone"
-
           git checkout main
           git pull origin main
 
-          git add models/*.dvc dvc.yaml dvc.lock .gitignore || echo "No model artifacts found"
-          git commit -m "🏋️‍♂️ Retrained model on data ${{ steps.date.outputs.date }}" || echo "No model changes"
+          # Track updated pipeline + lock + metadata
+          git add dvc.yaml dvc.lock .gitignore models/ || echo "No tracked files to add"
+
+          git commit -m "🏋️‍♂️ Retrained model and updated metadata on ${{ steps.date.outputs.date }}" || echo "No model changes"
           git push origin main
 
       # Optional: add remote storage later
