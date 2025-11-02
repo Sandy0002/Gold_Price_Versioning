@@ -1,0 +1,48 @@
+schema: '2.0'
+stages:
+  fetch_data:
+    cmd: python src_versioning/data_preprocess.py --output 
+      data/raw/gold_snapshot_latest.csv
+    deps:
+    - path: src_versioning/data_preprocess.py
+      hash: md5
+      md5: cc524ebaabdfa9e1d2358f0c688f8ee2
+      size: 4496
+    outs:
+    - path: data/raw/gold_snapshot_latest.csv
+      hash: md5
+      md5: 6a40f97e801b9e1bbba155c4379e7f7c
+      size: 123055
+  train_model:
+    cmd: python src_versioning/train_model.py --input 
+      data/raw/gold_snapshot_latest.csv --output models/gold_lstm_model.keras
+    deps:
+    - path: data/raw/gold_snapshot_latest.csv
+      hash: md5
+      md5: 6a40f97e801b9e1bbba155c4379e7f7c
+      size: 123055
+    - path: src_versioning/train_model.py
+      hash: md5
+      md5: 87f0e4d0cdd6e217ad948914eac5e648
+      size: 4138
+    outs:
+    - path: models/gold_lstm_model.keras
+      hash: md5
+      md5: 7b2e094029bef02329033d5cbe27d03c
+      size: 424646
+  update_metadata:
+    cmd: python src_versioning/metadata_updater.py
+    deps:
+    - path: models/gold_lstm_model.keras
+      hash: md5
+      md5: 7b2e094029bef02329033d5cbe27d03c
+      size: 424646
+    - path: src_versioning/metadata_updater.py
+      hash: md5
+      md5: 8012d83186322d152f2ce600d5c7c09d
+      size: 1058
+    outs:
+    - path: models/model_metadata.json
+      hash: md5
+      md5: fd2bdd9382bdfa135dce34e46f61203a
+      size: 81
