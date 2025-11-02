@@ -63,7 +63,7 @@ def modelUpdater(newModel,xTest,yTest):
 
 def prepare_data(df):
 
-    if df.empty:
+    if df is None or df.empty:
         print("⚠️ Empty dataframe received from DB")
         return np.array([]), np.array([]), np.array([]), np.array([]), None
 
