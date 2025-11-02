@@ -69,7 +69,7 @@ jobs:
               print("❌ PostgreSQL connection failed:", e)
           EOF
 
-            # 6️⃣ Run data fetch & update script
+      # 6️⃣ Run data fetch & update script
       - name: Get current date
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
@@ -82,11 +82,10 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           python src/data_preprocess.py 
+          dvc add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv
 
       - name: Track new snapshot with DVC
-        run: |
-          mkdir -p data/raw  # ✅ Ensure folder exists
-          dvc add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv
+        run: |          
           git add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv.dvc .gitignore
 
       - name: Commit updated data snapshot
