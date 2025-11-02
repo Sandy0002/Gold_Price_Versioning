@@ -1,14 +1,16 @@
 name: Data + Model Pipeline
 
 on:
-  # workflow_dispatch:
-  # schedule:
-  #   - cron: "45 14 * * *"   # Optional: Runs daily at 20:15 IST
-
+  schedule:
+    - cron: "0 4 * * *"  # runs every day at 4 AM (adjust if needed)
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    paths:
+      - "src_versioning/**"
+      - "dvc.yaml"
+      - ".github/workflows/pipeline.yml"
+
+permissions:
+  contents: write
 
 jobs:
   run_pipeline:
@@ -89,9 +91,12 @@ jobs:
           git fetch --prune --unshallow || echo "Already full clone"
           git checkout main
           git pull origin main
+          
+          # ✅ Just mark it for DVC tracking (no overlapping error)
+          dvc commit data/raw/gold_snapshot_latest.csv || dvc add data/raw/gold_snapshot_latest.csv
 
           git add dvc.yaml data/raw/ .gitignore
-          git commit -m "📦 Add latest data snapshot" || echo "No changes to commit"
+          git commit -m "Initialize DVC pipeline with data + model tracking" || echo "No changes to commit"
           git push origin main
 
       - name: Run DVC pipeline (data + model)
