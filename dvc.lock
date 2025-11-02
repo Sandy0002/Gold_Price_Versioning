@@ -23,19 +23,19 @@ stages:
       size: 123055
     - path: src_versioning/train_model.py
       hash: md5
-      md5: 87f0e4d0cdd6e217ad948914eac5e648
+      md5: 95923d1d5e0a9dec6792c3be376ac28f
       size: 4138
     outs:
     - path: models/gold_lstm_model.keras
       hash: md5
-      md5: 7b2e094029bef02329033d5cbe27d03c
+      md5: 2351215ed3900dbbe614082ba95b0843
       size: 424646
   update_metadata:
     cmd: python src_versioning/metadata_updater.py
     deps:
     - path: models/gold_lstm_model.keras
       hash: md5
-      md5: 7b2e094029bef02329033d5cbe27d03c
+      md5: 2351215ed3900dbbe614082ba95b0843
       size: 424646
     - path: src_versioning/metadata_updater.py
       hash: md5
@@ -44,5 +44,5 @@ stages:
     outs:
     - path: models/model_metadata.json
       hash: md5
-      md5: fd2bdd9382bdfa135dce34e46f61203a
+      md5: fa606db7d09ff6b4171ac00c17f084d3
       size: 81
