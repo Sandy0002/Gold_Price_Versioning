@@ -81,8 +81,9 @@ jobs:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-          mkdir -p data/raw
-          python src_versioning/data_preprocess.py
+          # mkdir -p data/raw
+          # python src_versioning/data_preprocess.py
+          python src/data_preprocess.py --output "data/raw/gold_snapshot_$(Get-Date -Format 'yyyy-MM-dd').csv"
 
       - name: Track new snapshot with DVC
         run: |
@@ -95,10 +96,10 @@ jobs:
           git checkout main
           git pull origin main
 
-
           dvc add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv
           git add data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv.dvc .gitignore
           git commit -m "📦 Add data snapshot for ${{ steps.date.outputs.date }}" || echo "No changes to commit"
           
+          git push origin main
           # this should be used when we have a remote connection like google drive,aws s3 etc to push the new version somewhere
           # dvc push

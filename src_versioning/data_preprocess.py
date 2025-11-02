@@ -104,24 +104,52 @@ def fetch_data_postgres(table_name="gold_prices",engine=None):
     return df
 
 # ---------- MAIN PIPELINE ----------
-if __name__ == "__main__":
-    project_root = Path(__file__).resolve().parents[1]
-    today = date.today()
-    data_dir = project_root / "data/raw"
-    data_dir.mkdir(parents=True,exist_ok=True)
-    data_file_path = data_dir / f"gold_snapshot_{today}.csv"
+# if __name__ == "__main__":
+#     project_root = Path(__file__).resolve().parents[1]
+#     today = date.today()
+#     data_dir = project_root / "data/raw"
+#     data_dir.mkdir(parents=True,exist_ok=True)
+#     data_file_path = data_dir / f"gold_snapshot_{today}.csv"
 
+#     new_data = fetch_gold_data()
+#     if len(new_data) > 0:
+#         store_data_postgres(new_data)
+
+#     df_retrieved = fetch_data_postgres()
+#     print(f"📊 Retrieved {len(df_retrieved)} rows")
+
+#     if not data_file_path.exists():
+#         df_retrieved.to_csv(data_file_path, index=False)
+#         print(f"✅ File created successfully with name {data_file_path}")
+
+
+#     # print(df_retrieved.tail())
+
+if __name__ == "__main__":
+    # --- Argument Parsing ---
+    parser = argparse.ArgumentParser(description="Fetch and store gold data snapshot.")
+    parser.add_argument("--output", type=str, required=True, help="Path to save CSV snapshot.")
+    args = parser.parse_args()
+
+    # --- Project Root Resolution ---
+    # __file__ → src/data_preprocess.py
+    # parents[1] → project root directory
+    project_root = Path(__file__).resolve().parents[1]
+
+    # Resolve final output path relative to project root
+    output_path = (project_root / args.output).resolve()
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    print(f"📂 Project Root: {project_root}")
+    print(f"📄 Saving snapshot to: {output_path}")
+
+    # --- Import your actual functions here ---
+    # --- Fetch + store + save data ---
     new_data = fetch_gold_data()
     if len(new_data) > 0:
         store_data_postgres(new_data)
 
     df_retrieved = fetch_data_postgres()
-    print(f"📊 Retrieved {len(df_retrieved)} rows")
-
-    if not data_file_path.exists():
-        df_retrieved.to_csv(data_file_path, index=False)
-        print(f"✅ File created successfully with name {data_file_path}")
-
-
-    # print(df_retrieved.tail())
-
+    df_retrieved.to_csv(output_path, index=False)
+    print(f"✅ File created successfully: {output_path}")
+    print(df_retrieved.tail())

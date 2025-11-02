@@ -17,3 +17,10 @@ PROJECT ROOT/
 ├── render.yaml
 ├── requirements.txt
 └── .github/           # CI/CD workflows
+
+
+### Key things to look while saving files and building models
+1. Compatible language version(Eg: python)
+2. Compatible framework version(Eg: tensorflow)
+3. Compatible model saving version(Eg: keras)
+4. Adding right script in actions 
