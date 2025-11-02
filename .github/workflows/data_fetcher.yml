@@ -83,7 +83,7 @@ jobs:
         run: |
           # mkdir -p data/raw
           # python src_versioning/data_preprocess.py
-          python src_versioning/data_preprocess.py --output "data/raw/gold_snapshot_$(Get-Date -Format 'yyyy-MM-dd').csv"
+          python src_versioning/data_preprocess.py --output "data/raw/gold_snapshot_${{ steps.date.outputs.date }}.csv"
 
       - name: Track new snapshot with DVC
         run: |
