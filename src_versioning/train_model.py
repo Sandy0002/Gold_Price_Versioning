@@ -6,8 +6,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import MinMaxScaler
 from pathlib import Path
 import argparse
-import numpy as np
 import pandas as pd
+import numpy as np
 import sys
 
 
