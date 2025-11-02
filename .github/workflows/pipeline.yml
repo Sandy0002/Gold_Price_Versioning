@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: "45 14 * * *"   # Optional: Runs daily at 20:15 IST
 
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
 jobs:
   run_pipeline:
     runs-on: ubuntu-latest
