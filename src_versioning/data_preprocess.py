@@ -108,13 +108,12 @@ if __name__ == "__main__":
     project_root = Path(__file__).resolve().parents[1]
     today = date.today()
     data_dir = project_root / "data/raw"
-    data_dir.mkdir(parents=True, exist_ok=True)
-
+    data_dir.mkdir(parents=True,exist_ok=True)
     data_file_path = data_dir / f"gold_snapshot_{today}.csv"
 
-    print(f"🧭 Project root: {project_root}")
-    print(f"📂 Saving to: {data_file_path.resolve()}")
-    print(f"File exists before saving? {data_file_path.exists()}")
+    # print(f"🧭 Project root: {project_root}")
+    # print(f"📂 Saving to: {data_file_path.resolve()}")
+
 
     new_data = fetch_gold_data()
     if len(new_data) > 0:
@@ -123,8 +122,10 @@ if __name__ == "__main__":
     df_retrieved = fetch_data_postgres()
     print(f"📊 Retrieved {len(df_retrieved)} rows")
 
-    df_retrieved.to_csv(data_file_path, index=False)
-    print(f"✅ File created successfully with name {data_file_path}")
+    if not data_file_path.exists():
+        df_retrieved.to_csv(data_file_path, index=False)
+        print(f"✅ File created successfully with name {data_file_path}")
 
 
-    print(df_retrieved.tail())
+    # print(df_retrieved.tail())
+
