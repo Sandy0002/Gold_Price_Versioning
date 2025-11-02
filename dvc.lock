@@ -28,14 +28,14 @@ stages:
     outs:
     - path: models/gold_lstm_model.keras
       hash: md5
-      md5: a6f1829a25075fc7c04ce3d64145357a
+      md5: 64055a5b61ba2d5dc6988778726d066a
       size: 424646
   update_metadata:
     cmd: python src_versioning/metadata_updater.py
     deps:
     - path: models/gold_lstm_model.keras
       hash: md5
-      md5: a6f1829a25075fc7c04ce3d64145357a
+      md5: 64055a5b61ba2d5dc6988778726d066a
       size: 424646
     - path: src_versioning/metadata_updater.py
       hash: md5
@@ -44,5 +44,5 @@ stages:
     outs:
     - path: models/model_metadata.json
       hash: md5
-      md5: b99c48889d0ead863b2fae8201e813b5
+      md5: fc8ce19a10112d87d3ed8dbdd85d1e06
       size: 81
