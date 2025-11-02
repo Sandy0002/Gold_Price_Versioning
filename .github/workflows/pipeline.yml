@@ -97,6 +97,11 @@ jobs:
           git push origin main
 
       - name: Run DVC pipeline (data + model)
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         run: dvc repro
 
       - name: Commit and push model
