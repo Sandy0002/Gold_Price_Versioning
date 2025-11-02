@@ -91,10 +91,7 @@ jobs:
           git fetch --prune --unshallow || echo "Already full clone"
           git checkout main
           git pull origin main
-          
-          # ✅ Just mark it for DVC tracking (no overlapping error)
-          dvc commit data/raw/gold_snapshot_latest.csv || dvc add data/raw/gold_snapshot_latest.csv
-
+        
           git add dvc.yaml data/raw/ .gitignore
           git commit -m "Initialize DVC pipeline with data + model tracking" || echo "No changes to commit"
           git push origin main
