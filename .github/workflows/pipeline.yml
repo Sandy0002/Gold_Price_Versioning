@@ -83,18 +83,6 @@ jobs:
 
             python src_versioning/data_preprocess.py --output "data/raw/gold_snapshot_latest.csv"
 
-      - name: Track new snapshot with DVC
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
-          git fetch --prune --unshallow || echo "Already full clone"
-          git checkout main
-          git pull origin main
-        
-          git add dvc.yaml data/raw/ .gitignore
-          git commit -m "Initialize DVC pipeline with data + model tracking" || echo "No changes to commit"
-          git push origin main
 
       - name: Run DVC pipeline (data + model)
         env:
