@@ -13,11 +13,6 @@ import json
 
 
 project_root = Path(__file__).resolve().parents[1]
-scaler = MinMaxScaler()
-models_dir =project_root / "models"
-# model_path = models_dir /"gold_lstm_model.h5"
-model_path = models_dir /"gold_lstm_model.keras"
-model = load_model(model_path)
 BASE_URL = "https://gold-price-monitoring-1.onrender.com/"
 
 # Frontend to backend health checks
@@ -103,16 +98,16 @@ def data_source_health():
 
 # Check if model is accessible or not and is loading or not
 def model_health():
-    project_root = Path(__file__).resolve().parents[1]
     scaler = MinMaxScaler()
-
-    if model is None:
-        return {"status": "❌ Error", "details": str(e)},500
-        # print(f'status": "❌ Failed to load model')
-
-    else:  
+    models_dir =project_root / "models"
+    model_path = models_dir /"gold_lstm_model.keras"
+    
+    try:
+        model = load_model(model_path)
         return {"status": " ✅ready", "details": "model loaded succsesfully"}
-        # print(f'status": "✅ready", "details": "model loaded succsesfully')
+    except Exception as e:
+        return {"status": "❌ Error while loading model", "details": str(e)},500
+        
 
 if __name__=='__main__':
     health_checks_checklist = {

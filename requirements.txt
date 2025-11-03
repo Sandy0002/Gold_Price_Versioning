@@ -12,3 +12,4 @@ uvicorn
 pytest
 httpx
 dvc
+dvc-gdrive
