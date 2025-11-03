@@ -122,7 +122,6 @@ if __name__=='__main__':
     results = {}
     for name, func in health_checks_checklist.items():
         response = func()
-        # print(type(response))
         if isinstance(response, dict):
             for sub_key, sub_value in response.items():
                 # Combine parent name and sub-check name for clarity
