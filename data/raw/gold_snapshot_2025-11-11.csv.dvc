@@ -1,0 +1,5 @@
+outs:
+- md5: 3c086fa720a2c2b6e9a22bf2ea385921
+  size: 123733
+  hash: md5
+  path: gold_snapshot_2025-11-11.csv
