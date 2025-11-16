@@ -113,7 +113,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     df = load_data(args.input)
-    trained_model = training(df)
+    trained_model = training()
 
     # The model is already saved inside modelUpdater, but save output path too for DVC tracking
     # trained_model.save(args.output)
