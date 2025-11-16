@@ -7,8 +7,8 @@ import argparse
 import pandas as pd
 import sys
 import joblib
-from src_versioning.sequence_creator import prepare_data
 import boto3
+from src_versioning.sequence_creator import prepare_data
 
 
 # ------------------ DATA LOADING ------------------ #
