@@ -1,13 +1,10 @@
 # In this program we will be training data by taking inputs from a preprocessed CSV
-
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.preprocessing import MinMaxScaler
 from pathlib import Path
 import argparse
 import pandas as pd
-import numpy as np
 import sys
 import joblib
 from src_versioning.sequence_creator import prepare_data

@@ -87,6 +87,11 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           python src_versioning/data_preprocess.py --output "data/raw/gold_snapshot_latest.csv"
+      
+      # Add project root to PYTHONPATH for module imports
+      - name: Add project root to PYTHONPATH
+        run: |
+          echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
 
       # -------------------- 9️⃣ RUN PIPELINE (TRAIN + METADATA) --------------------
       - name: Run DVC Pipeline
@@ -97,14 +102,21 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
         run:  |
          git config --global user.name "github-actions"
-         git config --global user.email "github-actions@github.com"
-         git pull origin main || true
-         
-         git rm -r --cached 'data/raw/gold_snapshot_latest.csv'
-         git commit -m "stop tracking data/raw/gold_snapshot_latest.csv" 
-         git rm -r --cached 'models/gold_lstm_model.pkl'
-         git commit -m "stop tracking models/gold_lstm_model.pkl" 
-         dvc repro
+          git config --global user.email "github-actions@github.com"
+
+          git pull origin main || true
+          echo "🧹 Cleaning Git-tracked DVC outputs if needed..."
+          if git ls-files --error-unmatch data/raw/gold_snapshot_latest.csv >/dev/null 2>&1; then
+            git rm --cached data/raw/gold_snapshot_latest.csv
+          fi
+
+          if git ls-files --error-unmatch models/gold_lstm_model.pkl >/dev/null 2>&1; then
+            git rm --cached models/gold_lstm_model.pkl
+          fi
+          
+          git commit -m "🧹 Stop tracking DVC-managed artifacts" || echo "No DVC-tracked files were in Git"
+          echo "🚀 Running DVC pipeline..."
+          dvc repro
 
       # -------------------- 🔟 COMMIT UPDATED ARTIFACTS --------------------
       - name: Commit changes (models + metadata)
