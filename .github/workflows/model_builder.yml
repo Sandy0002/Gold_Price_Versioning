@@ -4,10 +4,9 @@ on:
   schedule:
     - cron: "45 14 * * *"   # ✅ Runs every day at 20:15 IST after data_fetcher
     
-  # push:
-  #   branches: [ main ]
-  # pull_request:
-  #   branches: [ main ]
+  push:
+    paths:
+      - "src_versioning/train_model.py"
 
 
 permissions:
@@ -30,6 +29,13 @@ jobs:
         run: |
           pip install -r requirements.txt
       
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
       - name: Set environment variables
         env:
           DB_USER: ${{ secrets.DB_USER }}
@@ -86,8 +92,8 @@ jobs:
           git pull origin main
 
           # Stage files if they exist
-          # git add models/gold_lstm_model.h5
-          git add models/gold_lstm_model.keras
+          # git add models/gold_lstm_model.keras
+          git add models/gold_lstm_model.pkl
 
           git commit -m "Saved model automatically" || echo "No changes to commit"
           git push origin main

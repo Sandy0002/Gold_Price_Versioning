@@ -4,15 +4,26 @@ from pathlib import Path
 from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from src.train_model import training
+import joblib
+import boto3
+from sklearn.preprocessing import MinMaxScaler
 
 xTest,yTest,scaler = training()
 
-# Importing model
-project_root = Path(__file__).resolve().parents[1]
-models_dir = project_root / "models"
-# model_path = models_dir / "gold_lstm_model.h5"
-model_path = models_dir / "gold_lstm_model.keras"
-model = load_model(model_path)
+# # Importing model
+# bucket = "mlops-model-store01"
+# s3_key = "models/gold_lstm_model.pkl"
+
+# local_path = "gold_lstm_model.pkl"
+
+s3 = boto3.client("s3")
+
+# Download from S3
+# s3.download_file(bucket, s3_key, local_path)
+model_path = "models/gold_lstm_model.pkl"
+
+# Load model
+model = joblib.load(model_path)
 
 predictions = model.predict(xTest)
 predictions = scaler.inverse_transform(predictions.reshape(-1, 1))

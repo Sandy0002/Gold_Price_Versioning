@@ -7,7 +7,7 @@ stages:
       - data/raw/gold_snapshot_latest.csv
 
   train_model:
-    cmd: python src_versioning/train_model.py --input data/raw/gold_snapshot_latest.csv --output models/gold_lstm_model.keras
+    cmd: python src_versioning/train_model.py --input data/raw/gold_snapshot_latest.csv --output models/gold_lstm_model.pkl
     deps:
       - src_versioning/train_model.py
       - data/raw/gold_snapshot_latest.csv

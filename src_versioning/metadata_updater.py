@@ -8,8 +8,8 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 project_root = Path(__file__).resolve().parents[1]
 models_dir = project_root / "models"
 models_dir.mkdir(exist_ok=True)
-# model_file = models_dir / "gold_lstm_model.h5"
-model_file = models_dir / "gold_lstm_model.keras"
+# model_file = models_dir / "gold_lstm_model.keras"
+model_file = models_dir / "gold_lstm_model.pkl"
 metadata_file = models_dir / "model_metadata.json"
 
 # Example new model info

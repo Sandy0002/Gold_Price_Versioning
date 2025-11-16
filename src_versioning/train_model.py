@@ -9,6 +9,9 @@ import argparse
 import pandas as pd
 import numpy as np
 import sys
+import joblib
+import boto3
+from src.sequence_creator import prepare_data
 
 
 # ------------------ DATA LOADING ------------------ #
@@ -22,66 +25,64 @@ def load_data(input_path):
         return pd.DataFrame()  # return empty df if file missing
 
 
-# ------------------ SEQUENCE CREATION ------------------ #
-def create_sequences(data, lookback):
-    X, y = [], []
-    for i in range(lookback, len(data)):
-        X.append(data[i - lookback:i, 0])
-        y.append(data[i, 0])
-    return np.array(X), np.array(y)
-
-
 # ------------------ MODEL UPDATER ------------------ #
 def modelUpdater(newModel, xTest, yTest):
+    # Local storage
     project_root = Path(__file__).resolve().parents[1]
     models_dir = project_root / "models"
     models_dir.mkdir(exist_ok=True)
-    model_path = models_dir / "gold_lstm_model.keras"
+    model_path = models_dir / "gold_lstm_model.pkl"
 
+    # S3 setup
+    bucket = "mlops-model-store01"
+    s3_key = "models/gold_lstm_model.pkl"
+    local_path = "models/gold_lstm_model.pkl"
+
+    s3 = boto3.client("s3")
+
+    # Download from S3
+    try:
+        s3.download_file(bucket, s3_key, model_path)
+    except Exception as e:
+        pass
+
+    # ------ NEW MODEL METRICS ------
     y_pred_new = newModel.predict(xTest)
-    new_score_mse = mean_squared_error(yTest, y_pred_new)
-    new_score_r2 = r2_score(yTest, y_pred_new)
+    new_mse = mean_squared_error(yTest, y_pred_new)
+    new_r2 = r2_score(yTest, y_pred_new)
 
+    print(f"New Model ➝ MSE: {new_mse:.5f}, R2: {new_r2:.5f}")
+
+    # ------ If local model exists → compare ------
     if model_path.exists():
-        old_model = load_model(model_path)
+        print("ℹ️ Old model found. Comparing performance...")
+
+        old_model = joblib.load(model_path)
         y_pred_old = old_model.predict(xTest)
-        print("ℹ️ Generated predictions using old model")
-        old_score_mse = mean_squared_error(yTest, y_pred_old)
-        old_score_r2 = r2_score(yTest, y_pred_old)
+        old_mse = mean_squared_error(yTest, y_pred_old)
+        old_r2 = r2_score(yTest, y_pred_old)
 
-        print(f"Old model MSE: {old_score_mse:.5f}, R2: {old_score_r2:.5f}")
-        print(f"New model MSE: {new_score_mse:.5f}, R2: {new_score_r2:.5f}")
+        print(f"Old Model ➝ MSE: {old_mse:.5f}, R2: {old_r2:.5f}")
 
-        if new_score_r2 > old_score_r2:
-            print("✅ New model is better. Saving it.")
-            newModel.save(model_path)
+        # ------ METRIC COMPARISON ------
+        if new_r2 > old_r2:
+            print("✅ New model is better → Saving locally + Uploading to S3")
+
+            joblib.dump(newModel, model_path)
+
+            # Upload to S3
+            s3.upload_file(str(model_path), bucket, s3_key)
         else:
-            print("⚠️ New model is worse. Keeping old one.")
+            print("⚠️ New model worse → Keeping old model")
+
     else:
-        print("ℹ️ No existing model found. Saving new model.")
-        newModel.save(model_path)
+        # ------ FIRST TIME TRAINING ------
+        print("ℹ️ No old model → Saving first model locally + uploading to S3")
+        
+        joblib.dump(newModel, model_path)
+        s3.upload_file(str(model_path), bucket, s3_key)
 
-
-# ------------------ DATA PREPARATION ------------------ #
-def prepare_data(df):
-    if df is None or df.empty:
-        print("⚠️ Empty dataframe received — skipping training.")
-        return None, None, None, None, None
-
-    data = df[["Close"]]
-    scaler = MinMaxScaler(feature_range=(0, 1))
-    scaled_data = scaler.fit_transform(data)
-    lookback = 60
-
-    X, y = create_sequences(scaled_data, lookback)
-    X = np.reshape(X, (X.shape[0], X.shape[1], 1))
-
-    split = int(len(X) * 0.7)
-    X_train, X_test = X[:split], X[split:]
-    y_train, y_test = y[:split], y[split:]
-
-    return X_train, X_test, y_train, y_test, scaler
-
+    print("✔️ Update step completed.")
 
 # ------------------ TRAINING ------------------ #
 def training(data):
@@ -118,5 +119,6 @@ if __name__ == '__main__':
     trained_model = training(df)
 
     # The model is already saved inside modelUpdater, but save output path too for DVC tracking
-    trained_model.save(args.output)
-    print(f"✅ Model saved to {args.output}")
+    # trained_model.save(args.output)
+    # joblib.dump(trained_model, args.output)
+    print(f"✅ Model saved in s3")
