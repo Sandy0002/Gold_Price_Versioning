@@ -85,8 +85,8 @@ def modelUpdater(newModel, xTest, yTest):
     print("✔️ Update step completed.")
 
 # ------------------ TRAINING ------------------ #
-def training(data):
-    X_train, X_test, y_train, y_test, scaler = prepare_data(data)
+def training():
+    X_train, X_test, y_train, y_test, scaler = prepare_data()
 
     if X_train is None or len(X_train) == 0:
         print("⚠️ No training data available, skipping model training.")

@@ -3,11 +3,11 @@ name: Data + Model Pipeline
 on:
   schedule:
     - cron: "0 4 * * *"  # runs every day at 4 AM (adjust if needed)
-  push:
-    paths:
-      - "src_versioning/**"
-      - "dvc.yaml"
-      - ".github/workflows/pipeline.yml"
+  # push:
+  #   paths:
+  #     - "src_versioning/**"
+  #     - "dvc.yaml"
+  #     - ".github/workflows/pipeline.yml"
 
 permissions:
   contents: write
