@@ -10,8 +10,8 @@ import pandas as pd
 import numpy as np
 import sys
 import joblib
-import boto3
 from src_versioning.sequence_creator import prepare_data
+import boto3
 
 
 # ------------------ DATA LOADING ------------------ #
