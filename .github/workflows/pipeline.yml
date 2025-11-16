@@ -113,7 +113,7 @@ jobs:
           if git ls-files --error-unmatch models/gold_lstm_model.pkl >/dev/null 2>&1; then
             git rm --cached models/gold_lstm_model.pkl
           fi
-          
+
           git commit -m "🧹 Stop tracking DVC-managed artifacts" || echo "No DVC-tracked files were in Git"
           echo "🚀 Running DVC pipeline..."
           dvc repro
@@ -121,15 +121,26 @@ jobs:
       # -------------------- 🔟 COMMIT UPDATED ARTIFACTS --------------------
       - name: Commit changes (models + metadata)
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
+           git config --global user.name "github-actions"
+           git config --global user.email "github-actions@github.com"
 
-          git pull origin main || true
+           # ensure rebase is used
+           git config pull.rebase true
 
-          git add dvc.yaml dvc.lock .gitignore models/ data/raw/ || true
+           # fetch latest remote branch
+           git fetch origin main
 
-          git commit -m "🚀 Automated retraining + metadata update" || echo "No changes"
-          git push origin main || echo "Nothing to push"
+           # rebase onto remote branch to avoid divergent errors
+           git rebase origin/main || echo "No remote changes to rebase"
+
+           # add tracked files only (no errors if files missing)
+           git add dvc.yaml dvc.lock models/ data/raw/ || echo "No files to add"
+
+           # commit if there are changes
+           git diff --cached --quiet || git commit -m "🚀 Automated retraining + metadata update"
+
+           # push to remote (force-with-lease is safer than --force)
+           git push origin main --force-with-lease
 
       # -------------------- 1️⃣1️⃣ PUSH TO S3 --------------------
       - name: Push new DVC artifacts to S3
