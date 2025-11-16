@@ -1,0 +1,48 @@
+schema: '2.0'
+stages:
+  fetch_data:
+    cmd: python src_versioning/data_preprocess.py --output 
+      data/raw/gold_snapshot_latest.csv
+    deps:
+    - path: src_versioning/data_preprocess.py
+      hash: md5
+      md5: 3027c9b0b976199ad22cca9503204eb5
+      size: 3691
+    outs:
+    - path: data/raw/gold_snapshot_latest.csv
+      hash: md5
+      md5: d7532c886d081aa0efa943fe383ef5be
+      size: 124084
+  train_model:
+    cmd: python src_versioning/train_model.py --input 
+      data/raw/gold_snapshot_latest.csv --output models/gold_lstm_model.pkl
+    deps:
+    - path: data/raw/gold_snapshot_latest.csv
+      hash: md5
+      md5: d7532c886d081aa0efa943fe383ef5be
+      size: 124084
+    - path: src_versioning/train_model.py
+      hash: md5
+      md5: 97df89148320bcbde48b66949cda1c31
+      size: 3991
+    outs:
+    - path: models/gold_lstm_model.pkl
+      hash: md5
+      md5: d449b2777e5300bfed7e166844b1a322
+      size: 424797
+  update_metadata:
+    cmd: python src_versioning/metadata_updater.py
+    deps:
+    - path: models/gold_lstm_model.pkl
+      hash: md5
+      md5: d449b2777e5300bfed7e166844b1a322
+      size: 424797
+    - path: src_versioning/metadata_updater.py
+      hash: md5
+      md5: 9973347bc1e4debf2c00fa79f7d46a1f
+      size: 1059
+    outs:
+    - path: models/model_metadata.json
+      hash: md5
+      md5: 637354db0dfe76f335a99d39e92a9d3a
+      size: 81
