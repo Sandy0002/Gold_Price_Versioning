@@ -13,3 +13,4 @@ pytest
 httpx
 dvc
 awscli
+boto3
