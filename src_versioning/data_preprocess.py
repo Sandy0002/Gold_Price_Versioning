@@ -3,8 +3,8 @@ import pandas as pd
 from datetime import date, timedelta
 from sqlalchemy import create_engine, inspect
 import os
-from dotenv import load_dotenv
 from pathlib import Path
+from dotenv import load_dotenv
 import argparse
 
 load_dotenv()

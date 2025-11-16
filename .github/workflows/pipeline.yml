@@ -95,7 +95,12 @@ jobs:
           DB_PASS: ${{ secrets.DB_PASS }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
-        run: dvc repro
+        run:  |
+         git rm -r --cached 'data/raw/gold_snapshot_latest.csv'
+         git commit -m "stop tracking data/raw/gold_snapshot_latest.csv" 
+         git rm -r --cached 'models/gold_lstm_model.pkl'
+         git commit -m "stop tracking models/gold_lstm_model.pkl" 
+         dvc repro
 
       # -------------------- 🔟 COMMIT UPDATED ARTIFACTS --------------------
       - name: Commit changes (models + metadata)
