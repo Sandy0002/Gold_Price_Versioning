@@ -1,5 +1,0 @@
-outs:
-- md5: 29c3b077aaa359f6064054c5e83f448e
-  size: 424771
-  hash: md5
-  path: gold_lstm_model.pkl
