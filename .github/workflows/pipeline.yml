@@ -102,9 +102,42 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           
         run: |
-          git fetch origin main
-          git rebase origin/main || echo "No remote changes"
-          dvc repro
+            # -------------------- CONFIGURE GIT --------------------
+            git config --global user.name "github-actions"
+            git config --global user.email "github-actions@github.com"
+
+            # -------------------- SYNC WITH REMOTE --------------------
+            git fetch origin main
+            git rebase origin/main || echo "No remote changes"
+
+            # -------------------- CLEAN GIT-TRACKED DVC OUTPUTS --------------------
+            echo "🧹 Checking DVC outputs for Git tracking..."
+
+            # Data file
+            if git ls-files --error-unmatch data/raw/gold_snapshot_latest.csv >/dev/null 2>&1; then
+              echo "❌ data/raw/gold_snapshot_latest.csv is tracked by Git, removing..."
+              git rm --cached data/raw/gold_snapshot_latest.csv
+              git commit -m "🧹 Stop tracking data/raw/gold_snapshot_latest.csv" || echo "No commit needed"
+            fi
+
+            # Model file
+            if git ls-files --error-unmatch models/gold_lstm_model.pkl >/dev/null 2>&1; then
+              echo "❌ models/gold_lstm_model.pkl is tracked by Git, removing..."
+              git rm --cached models/gold_lstm_model.pkl
+              git commit -m "🧹 Stop tracking models/gold_lstm_model.pkl" || echo "No commit needed"
+            fi
+
+            # Metadata file
+            if git ls-files --error-unmatch models/model_metadata.json >/dev/null 2>&1; then
+              echo "❌ models/model_metadata.json is tracked by Git, removing..."
+              git rm --cached models/model_metadata.json
+              git commit -m "🧹 Stop tracking models/model_metadata.json" || echo "No commit needed"
+            fi
+
+            # -------------------- RUN DVC PIPELINE --------------------
+            echo "🚀 Running DVC pipeline..."
+            dvc repro
+
 
       # -------------------- 🔟 COMMIT UPDATED ARTIFACTS --------------------
       - name: Commit changes (models + metadata)
