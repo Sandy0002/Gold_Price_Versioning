@@ -11,6 +11,6 @@ fastapi
 uvicorn
 pytest
 httpx
-dvc
+dvc[s3]
 awscli
 boto3
