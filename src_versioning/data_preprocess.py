@@ -4,8 +4,8 @@ from datetime import date, timedelta
 from sqlalchemy import create_engine, inspect
 import os
 from dotenv import load_dotenv
-import argparse
 from pathlib import Path
+import argparse
 
 load_dotenv()
 
