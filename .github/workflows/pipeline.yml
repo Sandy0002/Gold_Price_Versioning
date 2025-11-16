@@ -96,6 +96,10 @@ jobs:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
         run:  |
+         git config --global user.name "github-actions"
+         git config --global user.email "github-actions@github.com"
+         git pull origin main || true
+         
          git rm -r --cached 'data/raw/gold_snapshot_latest.csv'
          git commit -m "stop tracking data/raw/gold_snapshot_latest.csv" 
          git rm -r --cached 'models/gold_lstm_model.pkl'
