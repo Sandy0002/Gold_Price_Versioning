@@ -105,7 +105,7 @@ def training():
     model.fit(X_train, y_train, epochs=20, batch_size=32, validation_data=(X_test, y_test), verbose=1)
 
     modelUpdater(model, X_test, y_test)
-    return model
+    return X_test,y_test,scaler
 
 
 # ------------------ MAIN ------------------ #
