@@ -100,21 +100,15 @@ jobs:
           DB_PASS: ${{ secrets.DB_PASS }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
-        run:  |
-         git config --global user.name "github-actions"
+          
+        run: |
+          git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
-          git pull origin main || true
-          echo "🧹 Cleaning Git-tracked DVC outputs if needed..."
-          if git ls-files --error-unmatch data/raw/gold_snapshot_latest.csv >/dev/null 2>&1; then
-            git rm --cached data/raw/gold_snapshot_latest.csv
-          fi
+          # make sure branch is up to date
+          git fetch origin main
+          git rebase origin/main || echo "No remote changes"
 
-          if git ls-files --error-unmatch models/gold_lstm_model.pkl >/dev/null 2>&1; then
-            git rm --cached models/gold_lstm_model.pkl
-          fi
-
-          git commit -m "🧹 Stop tracking DVC-managed artifacts" || echo "No DVC-tracked files were in Git"
           echo "🚀 Running DVC pipeline..."
           dvc repro
 
@@ -124,22 +118,12 @@ jobs:
            git config --global user.name "github-actions"
            git config --global user.email "github-actions@github.com"
 
-           # ensure rebase is used
-           git config pull.rebase true
-
-           # fetch latest remote branch
-           git fetch origin main
-
-           # rebase onto remote branch to avoid divergent errors
-           git rebase origin/main || echo "No remote changes to rebase"
-
-           # add tracked files only (no errors if files missing)
+           # Add .dvc files and outputs (metadata)
            git add dvc.yaml dvc.lock models/ data/raw/ || echo "No files to add"
 
-           # commit if there are changes
+           # commit only if changes exist
            git diff --cached --quiet || git commit -m "🚀 Automated retraining + metadata update"
 
-           # push to remote (force-with-lease is safer than --force)
            git push origin main --force-with-lease
 
       # -------------------- 1️⃣1️⃣ PUSH TO S3 --------------------
