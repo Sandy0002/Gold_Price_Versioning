@@ -11,7 +11,7 @@ import numpy as np
 import sys
 import joblib
 import boto3
-from src.sequence_creator import prepare_data
+from src_versioning.sequence_creator import prepare_data
 
 
 # ------------------ DATA LOADING ------------------ #

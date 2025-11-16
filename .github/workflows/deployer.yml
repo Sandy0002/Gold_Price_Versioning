@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'src/**'
+      - 'src_versioning/**'
       - 'models/**'
       - 'requirements.txt'
       - 'Dockerfile'

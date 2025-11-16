@@ -3,7 +3,7 @@ import numpy as np
 from pathlib import Path
 from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from src.train_model import training
+from src_versioning.train_model import training
 import joblib
 import boto3
 from sklearn.preprocessing import MinMaxScaler
