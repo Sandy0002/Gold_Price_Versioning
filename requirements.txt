@@ -13,4 +13,4 @@ pytest
 httpx
 dvc[s3]
 awscli
-boto3
+# boto3
