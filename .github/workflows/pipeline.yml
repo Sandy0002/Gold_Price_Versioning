@@ -73,16 +73,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # -------------------- 8️⃣ RUN DATA PREPROCESSING --------------------
-      - name: Run data preprocessing
-        env:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASS: ${{ secrets.DB_PASS }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-        run: |
-          python src_versioning/data_preprocess.py --output "data/raw/gold_snapshot_latest.csv"
-
       # Add project root to PYTHONPATH for module imports
       - name: Add project root to PYTHONPATH
         run: |
