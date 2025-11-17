@@ -73,11 +73,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-
-      # -------------------- 7️⃣ DOWNLOAD PREVIOUS DATA/MODEL --------------------
-      - name: DVC Pull (fetch previous version)
-        run: dvc pull || echo "No previous DVC data"
-
       # -------------------- 8️⃣ RUN DATA PREPROCESSING --------------------
       - name: Run data preprocessing
         env:
@@ -88,6 +83,10 @@ jobs:
         run: |
           python src_versioning/data_preprocess.py --output "data/raw/gold_snapshot_latest.csv"
       
+            # -------------------- 7️⃣ DOWNLOAD PREVIOUS DATA/MODEL --------------------
+      - name: DVC Pull (fetch previous version)
+        run: dvc pull || echo "No previous DVC data"
+        
       # Add project root to PYTHONPATH for module imports
       - name: Add project root to PYTHONPATH
         run: |
