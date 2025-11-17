@@ -11,16 +11,16 @@ stages:
     outs:
     - path: data/raw/gold_snapshot_latest.csv
       hash: md5
-      md5: d7532c886d081aa0efa943fe383ef5be
-      size: 124084
+      md5: 479c661008c94a232be49fd92bc2e82f
+      size: 124178
   train_model:
     cmd: python src_versioning/train_model.py --input 
       data/raw/gold_snapshot_latest.csv --output models/gold_lstm_model.pkl
     deps:
     - path: data/raw/gold_snapshot_latest.csv
       hash: md5
-      md5: d7532c886d081aa0efa943fe383ef5be
-      size: 124084
+      md5: 479c661008c94a232be49fd92bc2e82f
+      size: 124178
     - path: src_versioning/train_model.py
       hash: md5
       md5: 97df89148320bcbde48b66949cda1c31
@@ -44,5 +44,5 @@ stages:
     outs:
     - path: models/model_metadata.json
       hash: md5
-      md5: 637354db0dfe76f335a99d39e92a9d3a
+      md5: e91347fde6d3927beb946b33648d61bc
       size: 81
