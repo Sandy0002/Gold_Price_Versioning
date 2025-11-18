@@ -6,6 +6,10 @@ ENV PYTHONUNBUFFERED=1 \
     LOG_LEVEL=INFO \
     PORT=8000
 
+# Add this here
+ENV DVC_IGNORE_GIT_DIR=1
+
+
 # ---------- Set Working Directory ----------
 WORKDIR /app
 
