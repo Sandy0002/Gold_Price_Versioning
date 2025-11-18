@@ -27,7 +27,6 @@ COPY ./src_versioning ./src_versioning
 COPY .dvc .dvc
 COPY dvc.yaml .
 COPY dvc.lock .
-COPY *.dvc .   # model pointer files if any
 
 # ---------- (Optional) Copy .env if needed ----------
 # COPY .env ./
