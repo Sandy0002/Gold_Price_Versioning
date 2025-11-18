@@ -1,32 +1,27 @@
 FROM python:3.11-slim
 
-# ---------- Environment Variables ----------
+# Environment vars
 ENV PYTHONUNBUFFERED=1 \
-    APP_ENV=docker \
-    LOG_LEVEL=INFO \
     PORT=8000
 
-# ---------- Set Working Directory ----------
+# Set working directory
 WORKDIR /app
 
-# ---------- Copy Dependency File and Install ----------
+# Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install DVC with S3 support
+RUN pip install --no-cache-dir "dvc[s3]"
 
-# ---------- Copy Only Necessary Folders ----------
-COPY ./src ./src
-COPY ./models ./models
-COPY ./src_logger ./src_logger
+# Copy entire project (safer than selecting subfolders)
+COPY . .
 
-# ---------- (Optional) Copy .env if needed ----------
-# COPY .env ./
+# Create logs directory
+RUN mkdir -p /app/logs && chmod -R 777 /app/logs
 
-# ---------- Create Logs Directory ----------
-RUN mkdir -p /app/logs  && chmod -R 777 /app/logs
-
-# ---------- Expose Port ----------
+# Expose port
 EXPOSE 8000
 
-# ---------- Run Application ----------
-CMD ["uvicorn", "src_logger.api:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run: pull model from DVC -> start FastAPI
+CMD dvc pull && uvicorn src_logger.api:app --host 0.0.0.0 --port $PORT
