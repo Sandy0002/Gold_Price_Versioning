@@ -17,10 +17,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 
 # ---------- Copy Only Necessary Folders ----------
-COPY ./src ./src
 COPY ./models ./models
-COPY ./src_logger ./src_logger
+# COPY ./src_logger ./src_logger
 COPY ./src_versioning ./src_versioning
+COPY .dvc, dvc.yaml, dvc.lock
 
 # ---------- (Optional) Copy .env if needed ----------
 # COPY .env ./
