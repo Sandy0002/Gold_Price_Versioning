@@ -9,6 +9,8 @@ ENV PYTHONUNBUFFERED=1 \
 # ---------- Set Working Directory ----------
 WORKDIR /app
 
+# Add /app to Python path so imports work
+ENV PYTHONPATH="${PYTHONPATH}:/app"
 # ---------- Copy Dependency File and Install ----------
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
