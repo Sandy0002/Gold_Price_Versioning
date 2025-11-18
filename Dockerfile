@@ -20,6 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./src ./src
 COPY ./models ./models
 COPY ./src_logger ./src_logger
+COPY ./src_versioning ./src_versioning
 
 # ---------- (Optional) Copy .env if needed ----------
 # COPY .env ./
