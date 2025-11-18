@@ -25,12 +25,13 @@ COPY ./models ./models
 # COPY ./src_logger ./src_logger
 COPY ./src_versioning ./src_versioning
 
-
-
 # Copy DVC repo files
 COPY .dvc .dvc
 COPY dvc.yaml .
 COPY dvc.lock .
+
+# Copy git metadata (required for DVC)
+COPY .git .git
 
 # ---------- (Optional) Copy .env if needed ----------
 # COPY .env ./
