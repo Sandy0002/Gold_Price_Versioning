@@ -9,10 +9,10 @@ WORKDIR /app
 
 # Install dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --default-timeout=200 --retries=10 --no-cache-dir -r requirements.txt
 
 # Install DVC with S3 support
-RUN pip install --no-cache-dir "dvc[s3]"
+# RUN pip install --no-cache-dir "dvc[s3]"
 
 # Copy entire project (safer than selecting subfolders)
 COPY . .
