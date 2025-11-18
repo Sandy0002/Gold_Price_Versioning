@@ -44,5 +44,5 @@ stages:
     outs:
     - path: models/model_metadata.json
       hash: md5
-      md5: 380c07a76675a0d55a666e43c1799171
+      md5: f41904343e587dbc2c2369d06dfb8759
       size: 81
