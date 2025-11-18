@@ -1,11 +1,11 @@
 from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException, APIRouter
 import numpy as np
-from tensorflow.keras.models import load_model
 import json
 import os
 from pathlib import Path
 from sklearn.preprocessing import MinMaxScaler
+import joblib
 
 # ===============================
 # 1. Initialize FastAPI app
@@ -37,12 +37,12 @@ class InputData(BaseModel):
 # Load model at startup
 project_root = Path(__file__).resolve().parents[1]
 models_dir =project_root / "models"
-model = models_dir /"gold_lstm_model.keras"
+model_path = models_dir /"gold_lstm_model.pkl"
 metadata = models_dir / "model_metadata.json"
 scaler = MinMaxScaler()
 
 try:
-    model = load_model(model)
+    model = joblib.load(model_path)
     with open(metadata, "r") as f:
         metadata = json.load(f)
     print("✅ Model and metadata loaded successfully.")
