@@ -32,4 +32,5 @@ RUN mkdir -p /app/logs  && chmod -R 777 /app/logs
 EXPOSE 8000
 
 # ---------- Run Application ----------
-CMD ["uvicorn", "src_versioning.api:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD ["uvicorn", "src_versioning.api:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD dvc pull && uvicorn src_versioning.api:app --host 0.0.0.0 --port $PORT
