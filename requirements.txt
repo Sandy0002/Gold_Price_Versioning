@@ -6,7 +6,8 @@ scikit-learn
 sqlalchemy
 pathlib
 psycopg2-binary
-tensorflow==2.16.1
+# tensorflow==2.16.1 # now the below line is replaced with cpu to make production lite for render
+tensorflow-cpu==2.16.1
 fastapi
 uvicorn
 pytest
