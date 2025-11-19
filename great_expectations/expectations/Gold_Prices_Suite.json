@@ -1,0 +1,155 @@
+{
+  "data_asset_type": null,
+  "expectation_suite_name": "Gold_Prices_Suite",
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_table_columns_to_match_ordered_list",
+      "kwargs": {
+        "column_list": [
+          "Date",
+          "Open",
+          "High",
+          "Low",
+          "Close",
+          "Volume",
+          "Dividends",
+          "Stock Splits"
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Date"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": {
+        "column": "Date",
+        "type_": "DATE"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Open"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Open",
+        "min_value": 0
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "High"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "High",
+        "min_value": 0
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Low"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Low",
+        "min_value": 0
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Close"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Close",
+        "min_value": 0
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Volume"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Volume",
+        "min_value": 0
+      },
+      "meta": {}
+    }
+  ],
+  "ge_cloud_id": null,
+  "meta": {
+    "citations": [
+      {
+        "batch_request": {
+          "data_asset_name": "public.gold_prices",
+          "data_connector_name": "default_inferred_data_connector_name",
+          "datasource_name": "gold_prices_db",
+          "limit": 1000
+        },
+        "citation_date": "2025-11-19T07:18:51.761441Z",
+        "comment": "Created suite added via CLI"
+      },
+      {
+        "batch_request": {
+          "data_asset_name": "public.gold_prices",
+          "data_connector_name": "default_inferred_data_connector_name",
+          "datasource_name": "gold_prices_db",
+          "limit": 1000
+        },
+        "citation_date": "2025-11-19T09:10:57.291732Z",
+        "comment": "Created suite added via CLI"
+      },
+      {
+        "batch_request": {
+          "data_asset_name": "public.gold_prices",
+          "data_connector_name": "default_inferred_data_connector_name",
+          "datasource_name": "gold_prices_db",
+          "limit": 1000
+        },
+        "citation_date": "2025-11-19T10:01:18.607532Z",
+        "comment": "Created suite added via CLI"
+      }
+    ],
+    "great_expectations_version": "0.16.16"
+  }
+}

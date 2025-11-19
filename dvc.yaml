@@ -6,6 +6,16 @@ stages:
     outs:
       - data/raw/gold_snapshot_latest.csv
 
+  validate_data:
+    cmd: great_expectations checkpoint run gold_prices_checkpoint
+    deps:
+      - data/raw/gold_snapshot_latest.csv
+      - great_expectations/expectations/gold_prices_suite.json
+      - great_expectations/checkpoints/gold_prices_checkpoint.yml
+    outs:
+      - great_expectations/uncommitted/validations/
+      - great_expectations/uncommitted/data_docs/local_site/
+
   train_model:
     cmd: python src_versioning/train_model.py --input data/raw/gold_snapshot_latest.csv --output models/gold_lstm_model.pkl
     deps:
