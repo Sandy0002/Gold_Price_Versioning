@@ -14,5 +14,5 @@ pytest
 httpx
 dvc[s3]
 awscli
-# boto3
 great_expectations==0.16.16
+# boto3

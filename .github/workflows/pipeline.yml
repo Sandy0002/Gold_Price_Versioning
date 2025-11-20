@@ -8,6 +8,7 @@ on:
       - "src_versioning/**"
       - "dvc.yaml"
       - ".github/workflows/pipeline.yml"
+      - "requirements.txt"
 
 permissions:
   contents: write
