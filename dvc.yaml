@@ -11,7 +11,7 @@ stages:
     deps:
       - data/raw/gold_snapshot_latest.csv
       - great_expectations/expectations/Gold_Prices_Suite.json
-      - great_expectations/checkpoints/gold_prices_checkpoint.yml
+      - great_expectations/checkpoints/gold_prices_checkpoint1.yml
     outs:
       - great_expectations/uncommitted/validations/
       - great_expectations/uncommitted/data_docs/local_site/
