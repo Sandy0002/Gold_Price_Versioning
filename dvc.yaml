@@ -7,7 +7,7 @@ stages:
       - data/raw/gold_snapshot_latest.csv
 
   validate_data:
-    cmd: great_expectations checkpoint run gold_prices_checkpoint
+    cmd: great_expectations checkpoint run gold_prices_checkpoint1
     deps:
       - data/raw/gold_snapshot_latest.csv
       - great_expectations/expectations/Gold_Prices_Suite.json
