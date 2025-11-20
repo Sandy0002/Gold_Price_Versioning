@@ -18,5 +18,6 @@ awscli
 
 # Great Expectations Dependencies
 great_expectations==0.16.16
-ruamel.yaml<0.18        # required for GE 0.16.x CLI
-pyyaml
+pyspark
+google-cloud-storage
+google-cloud-secret-manager
