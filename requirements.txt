@@ -3,7 +3,7 @@ dotenv
 pandas
 numpy
 scikit-learn
-sqlalchemy
+sqlalchemy<2.0
 pathlib
 psycopg2-binary
 # tensorflow==2.16.1 # now the below line is replaced with cpu to make production lite for render
@@ -16,3 +16,4 @@ dvc[s3]
 awscli
 great_expectations==0.16.16
 # boto3
+ruamel.yaml<0.18        # required for GE 0.16.x CLI
