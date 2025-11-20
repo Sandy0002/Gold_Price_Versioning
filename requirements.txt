@@ -19,4 +19,4 @@ awscli
 great_expectations==0.16.16
 # boto3
 ruamel.yaml<0.18        # required for GE 0.16.x CLI
-pyspark
+pyyaml
