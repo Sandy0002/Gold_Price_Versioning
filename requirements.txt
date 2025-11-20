@@ -15,4 +15,4 @@ httpx
 dvc[s3]
 awscli
 # boto3
-great-expectations
+great_expectations==0.16.16
