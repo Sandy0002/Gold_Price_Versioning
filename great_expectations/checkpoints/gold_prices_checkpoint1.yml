@@ -1,67 +1,30 @@
-# name: gold_prices_checkpoint1
-# config_version: 1.0
-# template_name:
-# module_name: great_expectations.checkpoint
-# class_name: SimpleCheckpoint
-# run_name_template:
-# expectation_suite_name:
-# batch_request: {}
-# action_list:
-#   - name: store_validation_result
-#     action:
-#       class_name: StoreValidationResultAction
-#   - name: store_evaluation_params
-#     action:
-#       class_name: StoreEvaluationParametersAction
-#   - name: update_data_docs
-#     action:
-#       class_name: UpdateDataDocsAction
-# evaluation_parameters: {}
-# runtime_configuration: {}
-# validations:
-#   - batch_request:
-#       datasource_name: gold_prices_db
-#       data_connector_name: default_inferred_data_connector_name
-#       data_asset_name: public.gold_prices
-#       limit: 1000
-#     expectation_suite_name: Gold_Prices_Suite
-# profilers: []
-# ge_cloud_id:
-# expectation_suite_ge_cloud_id:
-
-
 name: gold_prices_checkpoint1
 config_version: 1.0
+template_name:
 module_name: great_expectations.checkpoint
 class_name: SimpleCheckpoint
-
-run_name_template: "%Y%m%d-%H%M%S-gold-checkpoint"
-
-validations:
-  - batch_request:
-      datasource_name: gold_prices_db
-      data_connector_name: default_runtime_data_connector_name
-      data_asset_name: gold_prices_runtime
-      runtime_parameters:
-        query: SELECT * FROM public.gold_prices
-      batch_identifiers:
-        default_identifier_name: full_table
-    expectation_suite_name: Gold_Prices_Suite
-
+run_name_template:
+expectation_suite_name:
+batch_request: {}
 action_list:
   - name: store_validation_result
     action:
       class_name: StoreValidationResultAction
-
   - name: store_evaluation_params
     action:
       class_name: StoreEvaluationParametersAction
-
   - name: update_data_docs
     action:
       class_name: UpdateDataDocsAction
-
 evaluation_parameters: {}
-runtime_configuration:
-  result_format:
-    result_format: COMPLETE
+runtime_configuration: {}
+validations:
+  - batch_request:
+      datasource_name: gold_prices_db
+      data_connector_name: default_inferred_data_connector_name
+      data_asset_name: public.gold_prices
+      limit: 1000
+    expectation_suite_name: Gold_Prices_Suite
+profilers: []
+ge_cloud_id:
+expectation_suite_ge_cloud_id:

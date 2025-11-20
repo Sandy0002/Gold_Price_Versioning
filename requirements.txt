@@ -1,7 +1,7 @@
 yfinance
 dotenv
-pandas==1.5.3
-numpy==1.23.5
+pandas
+numpy
 scikit-learn
 sqlalchemy<2.0
 pathlib
@@ -18,9 +18,9 @@ awscli
 
 # Great Expectations Dependencies
 great_expectations==0.16.16
-# pyspark
-# google-cloud-storage
-# google-cloud-secret-manager
-# azure-storage-blob 
-# azure-identity 
-# azure-keyvault-secrets
+pyspark
+google-cloud-storage
+google-cloud-secret-manager
+azure-storage-blob
+azure-identity
+azure-keyvault-secrets
