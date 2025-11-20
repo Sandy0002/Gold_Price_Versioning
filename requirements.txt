@@ -3,7 +3,8 @@ dotenv
 pandas
 numpy
 scikit-learn
-sqlalchemy<2.0
+# sqlalchemy<2.0
+sqlalchemy
 pathlib
 psycopg2-binary
 # tensorflow==2.16.1 # now the below line is replaced with cpu to make production lite for render
@@ -17,7 +18,11 @@ awscli
 # boto3
 
 # Great Expectations Dependencies
-great_expectations==0.16.16
-pyspark
-google-cloud-storage
-google-cloud-secret-manager
+# great_expectations==0.16.16
+great_expectations
+# pyspark
+# google-cloud-storage
+# google-cloud-secret-manager
+# azure-storage-blob 
+# azure-identity 
+# azure-keyvault-secrets
