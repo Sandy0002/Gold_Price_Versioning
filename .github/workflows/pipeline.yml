@@ -123,9 +123,16 @@ jobs:
               git commit -m "🧹 Stop tracking models/model_metadata.json" || echo "No commit needed"
             fi
 
+            # Base data for drift detection file
+            if git ls-files --error-unmatch data/reporting_data/base_data.parquet >/dev/null 2>&1; then
+              echo "❌ data/reporting_data/base_data.parquet is tracked by Git, removing..."
+              git rm --cached data/reporting_data/base_data.parquet
+              git commit -m "🧹 Stop tracking data/reporting_data/base_data.parquet" || echo "No commit needed"
+            fi
+
             # -------------------- RUN DVC PIPELINE --------------------
             echo "🚀 Running DVC pipeline..."
-            dvc repro drift_detection
+            dvc repro
 
 
       # -------------------- 🔟 COMMIT UPDATED ARTIFACTS --------------------
