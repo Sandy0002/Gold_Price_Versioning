@@ -35,7 +35,7 @@ stages:
   drift_detection:
     cmd: python src_versioning/drift_detector.py --reference data/reporting_data/base_data.parquet --current data/raw/gold_snapshot_latest.csv --out data/reporting_data/drift_report.html
     deps:
-      - src_versioning/drift_detection.py
+      - src_versioning/drift_detector.py
       - data/reporting_data/base_data.parquet
       - data/raw/gold_snapshot_latest.csv
     outs:
