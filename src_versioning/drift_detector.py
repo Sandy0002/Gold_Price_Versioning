@@ -15,6 +15,7 @@ from evidently.metric_preset import DataDriftPreset
 import datetime
 
 
+
 '''Storing drifted features
 Columns like below:
 date | drift_detected | drift_score | features_drifted
@@ -61,7 +62,7 @@ def detector():
     # =========================================================
     drift_report = Report(metrics=[DataDriftPreset()])
     drift_report.run(reference_data=reference_df, current_data=current_df)
-    drift_report.save_html("data/reporting_data/drift_report.html")
+    drift_report.save_html("data/reporting_data/drift_full_report.html")
 
     drift_report_dict = drift_report.as_dict()
     dataset_drift_info = drift_report_dict["metrics"][0]["result"]

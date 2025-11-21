@@ -39,5 +39,5 @@ stages:
       - data/reporting_data/base_data.parquet
       - data/raw/gold_snapshot_latest.csv
     outs:
-      - data/reporting_data/drift_report.html
-      - data/reporting_data/drifted_features.json
+      - data/reporting_data/drift_full_report.html
+      - data/reporting_data/drift_test_suite_report.html
