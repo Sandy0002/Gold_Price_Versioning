@@ -60,7 +60,7 @@ jobs:
           except Exception as e:
               print("❌ PostgreSQL connection failed:", e)
           EOF
-          
+
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASS: ${{ secrets.DB_PASS }}
@@ -125,7 +125,7 @@ jobs:
 
             # -------------------- RUN DVC PIPELINE --------------------
             echo "🚀 Running DVC pipeline..."
-            dvc repro
+            dvc repro drift_detection
 
 
       # -------------------- 🔟 COMMIT UPDATED ARTIFACTS --------------------
