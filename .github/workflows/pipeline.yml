@@ -56,9 +56,10 @@ jobs:
                 user=os.getenv("DB_USER"),
                 password=os.getenv("DB_PASS"),
                 dbname=os.getenv("DB_NAME"),
-                tablename=os.getenv("TABLE_NAME")
-              )
+                )
+              tablename=os.getenv("TABLE_NAME")
               print("✅ PostgreSQL connected")
+              print("Table getting connected")
           except Exception as e:
               print("❌ PostgreSQL connection failed:", e)
           EOF
