@@ -5,8 +5,8 @@ stages:
     deps:
     - path: src_versioning/data_preprocess.py
       hash: md5
-      md5: 3027c9b0b976199ad22cca9503204eb5
-      size: 3691
+      md5: 304702aa063c0c125239b86ac7c490c6
+      size: 3721
     outs:
     - path: data/raw/gold_snapshot_latest.csv
       hash: md5
@@ -43,7 +43,7 @@ stages:
     outs:
     - path: models/model_metadata.json
       hash: md5
-      md5: bbbc8c365ae555e8f2f41dee70379864
+      md5: 875862c9162ce0188c3d2a9adb6c4101
       size: 81
   validate_data:
     cmd: great_expectations checkpoint run gold_prices_checkpoint1
@@ -63,11 +63,36 @@ stages:
     outs:
     - path: great_expectations/uncommitted/data_docs/local_site/
       hash: md5
-      md5: 8592e7d1f266e86ee23871099d770ca9.dir
+      md5: 87130d57541ed6bb6241cee42952a2da.dir
       size: 4202340
       nfiles: 23
     - path: great_expectations/uncommitted/validations/
       hash: md5
-      md5: a71b228d77d304581ef665aa1bba8d2b.dir
+      md5: 675fe34ed3d75d5f558ea1a4f8f5b60c.dir
       size: 11003
       nfiles: 2
+  drift_detection:
+    cmd: python src_versioning/drift_detector.py --reference data/reporting_data/base_data.parquet
+      --current data/raw/gold_snapshot_latest.csv --out data/reporting_data/drift_report.html
+    deps:
+    - path: data/raw/gold_snapshot_latest.csv
+      hash: md5
+      md5: f3d396c34e698b1b316853944a7d39c8
+      size: 124524
+    - path: data/reporting_data/base_data.parquet
+      hash: md5
+      md5: 97a2ec09e753386e3a5608bc6a2d3aab
+      size: 56203
+    - path: src_versioning/drift_detector.py
+      hash: md5
+      md5: 35f5e4c51af28d8551115cb735ee6ac3
+      size: 3668
+    outs:
+    - path: data/reporting_data/drift_full_report.html
+      hash: md5
+      md5: 2e6a4b942a403759b476d13a2773cdb0
+      size: 3019732
+    - path: data/reporting_data/drift_test_suite_report.html
+      hash: md5
+      md5: 3292f99276484b87ab131982e7635df1
+      size: 2831407
