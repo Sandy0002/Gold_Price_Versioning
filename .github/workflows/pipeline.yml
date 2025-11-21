@@ -43,6 +43,7 @@ jobs:
           DB_PASS: ${{ secrets.DB_PASS }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
+          TABLE_NAME: ${{secrets.TABLE_NAME}}
 
       # -------------------- 5️⃣ TEST Postgres CONNECTION --------------------
       - name: Test PostgreSQL connection
@@ -54,7 +55,8 @@ jobs:
                 host=os.getenv("DB_HOST"),
                 user=os.getenv("DB_USER"),
                 password=os.getenv("DB_PASS"),
-                dbname=os.getenv("DB_NAME")
+                dbname=os.getenv("DB_NAME"),
+                tablename=os.getenv("TABLE_NAME")
               )
               print("✅ PostgreSQL connected")
           except Exception as e:
@@ -65,6 +67,7 @@ jobs:
           DB_PASS: ${{ secrets.DB_PASS }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
+          TABLE_NAME: ${{secrets.TABLE_NAME}}
 
       # -------------------- 6️⃣ CONFIGURE S3 REMOTE --------------------
       - name: Configure AWS Credentials
@@ -86,6 +89,7 @@ jobs:
           DB_PASS: ${{ secrets.DB_PASS }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
+          TABLE_NAME: ${{secrets.TABLE_NAME}}
           
         run: |
             # -------------------- CONFIGURE GIT --------------------

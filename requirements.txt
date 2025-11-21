@@ -12,20 +12,19 @@ fastapi
 uvicorn
 pytest
 httpx
-dvc[s3]
-awscli
+# dvc[s3]
+# awscli
 
-# Great Expectations Dependencies
-great_expectations==0.16.16
+# # Great Expectations Dependencies
+# great_expectations==0.16.16
 
-# This below packages are required by runner as it looks for these libraries even though they are not being used
-pyspark
-google-cloud-storage
-google-cloud-secret-manager
-azure-storage-blob
-azure-identity
-azure-keyvault-secrets
+# # This below packages are required by runner as it looks for these libraries even though they are not being used
+# pyspark
+# google-cloud-storage
+# google-cloud-secret-manager
+# azure-storage-blob
+# azure-identity
+# azure-keyvault-secrets
 
-
-# Evidently requirements
-evidently==0.3.2
+# # Evidently requirements
+# evidently==0.3.2
