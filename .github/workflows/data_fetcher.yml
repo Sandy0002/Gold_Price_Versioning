@@ -1,12 +1,12 @@
 name: Fetch and Update Gold Data
 
 on:
-  schedule:
-    - cron: "40 14 * * *"   # Optional: Runs daily at 20:10 IST
+  # schedule:
+  #   - cron: "40 14 * * *"   # Optional: Runs daily at 20:10 IST
     
-  # push:
-  #   paths:
-  #     - "src_versioning/data_preprocess.py"
+  push:
+    paths:
+      - "src_versioning/data_preprocess.py"
 
 permissions:
   contents: write

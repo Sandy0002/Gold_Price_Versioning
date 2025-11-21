@@ -2,7 +2,7 @@ name: End-to-End Data + Model Pipeline
 
 on:
   schedule:
-    - cron: "0 4 * * *"  # Daily 4 AM
+    - cron: "0 11 * * *"  # Daily 4 AM
   push:
     paths:
       - "src_versioning/**"
