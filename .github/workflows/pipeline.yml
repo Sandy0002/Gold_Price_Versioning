@@ -131,7 +131,7 @@ jobs:
             fi
 
             # Full report on drift
-            if git ls-files --error-unmatchdata/reporting_data/drift_full_report.html >/dev/null 2>&1; then
+            if git ls-files --error-unmatch data/reporting_data/drift_full_report.html >/dev/null 2>&1; then
               echo "❌ data/reporting_data/drift_full_report.html is tracked by Git, removing..."
               git rm --cached data/reporting_data/drift_full_report.html
               git commit -m "🧹 Stop data/reporting_data/drift_full_report.html" || echo "No commit needed"
