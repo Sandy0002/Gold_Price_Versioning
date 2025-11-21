@@ -43,7 +43,6 @@ jobs:
           DB_PASS: ${{ secrets.DB_PASS }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
-          TABLE_NAME: ${{secrets.TABLE_NAME}}
 
       # -------------------- 5️⃣ TEST Postgres CONNECTION --------------------
       - name: Test PostgreSQL connection
@@ -57,12 +56,11 @@ jobs:
                 password=os.getenv("DB_PASS"),
                 dbname=os.getenv("DB_NAME"),
                 )
-              tablename=os.getenv("TABLE_NAME")
               print("✅ PostgreSQL connected")
-              print("Table getting connected")
           except Exception as e:
               print("❌ PostgreSQL connection failed:", e)
           EOF
+          
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASS: ${{ secrets.DB_PASS }}
