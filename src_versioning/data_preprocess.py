@@ -17,11 +17,12 @@ def get_engine():
     )
 
 # ---------- STEP 1: FETCH GOLD DATA ----------
-def fetch_gold_data(table_name="gold_prices", ticker="GC=F"):
+def fetch_gold_data(ticker="GC=F"):
     engine = get_engine()
     gold = yf.Ticker(ticker)
 
     inspector = inspect(engine)
+    table_name=os.getenv("TABLE_NAME")
     table_exists = table_name in inspector.get_table_names()
 
     # Determine start date
@@ -60,7 +61,8 @@ def fetch_gold_data(table_name="gold_prices", ticker="GC=F"):
     return df
 
 # ---------- STEP 2: STORE TO POSTGRES ----------
-def store_data_postgres(df, table_name="gold_prices"):
+def store_data_postgres(df):
+    table_name=os.getenv("TABLE_NAME")
     if df.empty:
         print("ℹ️ No new rows to append.")
         return
@@ -77,8 +79,9 @@ def store_data_postgres(df, table_name="gold_prices"):
         print(f"✅ Appended {len(df)} new rows to '{table_name}'.")
 
 # ---------- STEP 3: FETCH FROM POSTGRES ----------
-def fetch_data_postgres(table_name="gold_prices", engine=None):
+def fetch_data_postgres():
     engine = get_engine()
+    table_name = os.getenv('TABLE_NAME')
     df = pd.read_sql(f"SELECT * FROM {table_name}", engine)
     print(f"✅ Retrieved {len(df)} rows from '{table_name}'.")
     return df

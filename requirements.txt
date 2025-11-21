@@ -25,3 +25,6 @@ google-cloud-secret-manager
 azure-storage-blob
 azure-identity
 azure-keyvault-secrets
+
+# Evidently requirements
+evidently==0.3.2

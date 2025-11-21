@@ -1,13 +1,13 @@
 name: 🧪 Run Tests
 
 on:
-  schedule:
-    - cron: "00 15 * * *" 
+  # schedule:
+  #   - cron: "00 15 * * *" 
 
-  # push:
-  #   branches: [ main]
-  # pull_request:
-  #   branches: [ main]
+  push:
+    paths:
+    - "src/tests/"
+    - ".github/workflows/tester.yml"
 
 jobs:
   test:

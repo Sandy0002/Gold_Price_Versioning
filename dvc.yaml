@@ -31,3 +31,13 @@ stages:
       - models/gold_lstm_model.pkl
     outs:
       - models/model_metadata.json
+
+  drift_detection:
+    cmd: python src_versioning/drift_detector.py --reference data/reporting_data/base_data.parquet --current data/raw/gold_snapshot_latest.csv --out data/reporting_data/drift_report.html
+    deps:
+      - src_versioning/drift_detection.py
+      - data/reporting_data/base_data.parquet
+      - data/raw/gold_snapshot_latest.csv
+    outs:
+      - data/reporting_data/drift_report.html
+      - data/reporting_data/drifted_features.json
