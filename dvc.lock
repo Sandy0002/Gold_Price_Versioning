@@ -1,8 +1,7 @@
 schema: '2.0'
 stages:
   fetch_data:
-    cmd: python src_versioning/data_preprocess.py --output 
-      data/raw/gold_snapshot_latest.csv
+    cmd: python src_versioning/data_preprocess.py --output data/raw/gold_snapshot_latest.csv
     deps:
     - path: src_versioning/data_preprocess.py
       hash: md5
@@ -11,19 +10,19 @@ stages:
     outs:
     - path: data/raw/gold_snapshot_latest.csv
       hash: md5
-      md5: 070844ba86ec1699fa6baae932fa0486
-      size: 124357
+      md5: fb0d6fa708afd084da6a6eaf7f7ccac8
+      size: 124430
   train_model:
-    cmd: python src_versioning/train_model.py --input 
-      data/raw/gold_snapshot_latest.csv --output models/gold_lstm_model.pkl
+    cmd: python src_versioning/train_model.py --input data/raw/gold_snapshot_latest.csv
+      --output models/gold_lstm_model.pkl
     deps:
     - path: data/raw/gold_snapshot_latest.csv
       hash: md5
-      md5: 070844ba86ec1699fa6baae932fa0486
-      size: 124357
+      md5: fb0d6fa708afd084da6a6eaf7f7ccac8
+      size: 124430
     - path: src_versioning/train_model.py
       hash: md5
-      md5: 97df89148320bcbde48b66949cda1c31
+      md5: 4f40d00cab42c92e0baa29cd71c81d24
       size: 3991
     outs:
     - path: models/gold_lstm_model.pkl
@@ -44,5 +43,31 @@ stages:
     outs:
     - path: models/model_metadata.json
       hash: md5
-      md5: 3dc733afe65ed3d3bd3cf373628093b5
+      md5: 76c38394547d8823a421aca65b4cb020
       size: 81
+  validate_data:
+    cmd: great_expectations checkpoint run gold_prices_checkpoint1
+    deps:
+    - path: data/raw/gold_snapshot_latest.csv
+      hash: md5
+      md5: fb0d6fa708afd084da6a6eaf7f7ccac8
+      size: 124430
+    - path: great_expectations/checkpoints/gold_prices_checkpoint1.yml
+      hash: md5
+      md5: f9314240ffebb93977cd277dac040a2f
+      size: 826
+    - path: great_expectations/expectations/Gold_Prices_Suite.json
+      hash: md5
+      md5: 1adc0557ab11020bd3b005926580bd4a
+      size: 3651
+    outs:
+    - path: great_expectations/uncommitted/data_docs/local_site/
+      hash: md5
+      md5: eafe679d2034a2988f87696e3b9bc0fa.dir
+      size: 4202340
+      nfiles: 23
+    - path: great_expectations/uncommitted/validations/
+      hash: md5
+      md5: bf640fd941810d646ac56e3134c3115a.dir
+      size: 11003
+      nfiles: 2
