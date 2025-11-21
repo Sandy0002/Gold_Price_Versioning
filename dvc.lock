@@ -10,16 +10,16 @@ stages:
     outs:
     - path: data/raw/gold_snapshot_latest.csv
       hash: md5
-      md5: fb0d6fa708afd084da6a6eaf7f7ccac8
-      size: 124430
+      md5: f3d396c34e698b1b316853944a7d39c8
+      size: 124524
   train_model:
     cmd: python src_versioning/train_model.py --input data/raw/gold_snapshot_latest.csv
       --output models/gold_lstm_model.pkl
     deps:
     - path: data/raw/gold_snapshot_latest.csv
       hash: md5
-      md5: fb0d6fa708afd084da6a6eaf7f7ccac8
-      size: 124430
+      md5: f3d396c34e698b1b316853944a7d39c8
+      size: 124524
     - path: src_versioning/train_model.py
       hash: md5
       md5: 4f40d00cab42c92e0baa29cd71c81d24
@@ -43,15 +43,15 @@ stages:
     outs:
     - path: models/model_metadata.json
       hash: md5
-      md5: 76c38394547d8823a421aca65b4cb020
+      md5: bbbc8c365ae555e8f2f41dee70379864
       size: 81
   validate_data:
     cmd: great_expectations checkpoint run gold_prices_checkpoint1
     deps:
     - path: data/raw/gold_snapshot_latest.csv
       hash: md5
-      md5: fb0d6fa708afd084da6a6eaf7f7ccac8
-      size: 124430
+      md5: f3d396c34e698b1b316853944a7d39c8
+      size: 124524
     - path: great_expectations/checkpoints/gold_prices_checkpoint1.yml
       hash: md5
       md5: f9314240ffebb93977cd277dac040a2f
@@ -63,11 +63,11 @@ stages:
     outs:
     - path: great_expectations/uncommitted/data_docs/local_site/
       hash: md5
-      md5: eafe679d2034a2988f87696e3b9bc0fa.dir
+      md5: 8592e7d1f266e86ee23871099d770ca9.dir
       size: 4202340
       nfiles: 23
     - path: great_expectations/uncommitted/validations/
       hash: md5
-      md5: bf640fd941810d646ac56e3134c3115a.dir
+      md5: a71b228d77d304581ef665aa1bba8d2b.dir
       size: 11003
       nfiles: 2
