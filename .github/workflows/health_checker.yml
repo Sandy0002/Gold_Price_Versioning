@@ -4,10 +4,10 @@ on:
   schedule:
     - cron: "0 */6 * * *"   # ✅ Runs in every 6 hours
     
-  # push:
-  #   branches: [ main ]
-  # pull_request:
-  #   branches: [ main ]
+  push:
+    paths:
+      - "src/health_checks.py"
+      - ".github/workflows/health_checker.yml"
 
 jobs:
   test:
